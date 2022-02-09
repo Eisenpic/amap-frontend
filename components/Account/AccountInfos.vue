@@ -85,10 +85,10 @@ export default {
       user: this.$auth.state.user,
       edit: [],
       message: '',
-      prenom: 'Baptiste',
-      nom: 'Houques',
-      email: 'baptiste@hou.com',
-      tel: '0808080808'
+      prenom: this.$auth.state.user.prenom,
+      nom: this.$auth.state.user.nom,
+      email: this.$auth.state.user.email,
+      tel: this.$auth.state.user.telephone
     }
   },
   methods: {
@@ -107,6 +107,9 @@ export default {
       }).then((response) => {
         this.edit = []
         this.message = 'Informations mises à jour'
+        this.$auth.$storage.setState('user', response.data)
+        this.$auth.setUser(response.data)
+        this.$router.go()
       })
     }
   }
