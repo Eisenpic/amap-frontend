@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-one-quarter-desktop is-half-tablet is-full-mobile">
+  <nuxt-link :to="{name: 'contributeurs-recettes-id', params: { id: contributeur.id }}" class="column is-one-quarter-desktop is-half-tablet is-full-mobile">
     <div class="card">
       <div class="card-image">
         <figure class="image is-4by3">
@@ -11,19 +11,21 @@
           {{ fullname }}
         </p>
 
-        <div v-if="suivi">
-          <b-button rounded class="is-small" @click="unfollow">
-            Ne plus suivre
-          </b-button>
-        </div>
-        <div v-else>
-          <b-button rounded class="is-small" @click="follow">
-            Suivre
-          </b-button>
+        <div v-if="$auth.loggedIn">
+          <div v-if="suivi">
+            <b-button rounded class="is-small" @click="unfollow">
+              Ne plus suivre
+            </b-button>
+          </div>
+          <div v-else>
+            <b-button rounded class="is-small" @click="follow">
+              Suivre
+            </b-button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </nuxt-link>
 </template>
 
 <script>
@@ -42,7 +44,9 @@ export default {
     }
   },
   mounted () {
-    this.isFollowing()
+    if (this.$auth.loggedIn) {
+      this.isFollowing()
+    }
   },
   methods: {
     isFollowing () {
