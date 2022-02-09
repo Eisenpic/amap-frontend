@@ -1,5 +1,41 @@
 <template>
-  <div v-if="!loading">
+  <div>
+    <div v-if="etapes" id="fenetreEtape" class="blur">
+      <div id="etapeCard" class="card p-4">
+        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="closeStep()" />
+        <h1 class="is-size-4 ml-4 mt-4">
+          <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
+        </h1>
+        <p class="has-text-centered p-3">
+          <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
+          <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
+        </p>
+        <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
+        <p class="ml-4 mt-5 contenu">
+          {{ etapes[indexEtape].contenu }}
+        </p>
+        <footer>
+          <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
+            Précédent
+          </button>
+          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --; timer = etapes[indexEtape].temps">
+            Précédent
+          </button>
+          <button
+            v-if="indexEtape === etapes.length -1"
+            class="button is-medium is-primary"
+            style="float:right;"
+            @click="indexEtape = 0; closeStep()"
+          >
+            Fin
+          </button>
+          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++; timer = etapes[indexEtape].temps">
+            Suivant
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div v-if="!loading">
     <div v-if="error">
       <p>{{ messageError }}</p>
     </div>
@@ -90,41 +126,7 @@
         </b-button>
       </div>
     </div>
-    <div v-if="etapes" id="fenetreEtape" class="blur">
-      <div id="etapeCard" class="card p-4">
-        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="closeStep()" />
-        <h1 class="is-size-4 ml-4 mt-4">
-          <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
-        </h1>
-        <p class="has-text-centered p-3">
-          <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
-          <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
-        </p>
-        <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
-        <p class="ml-4 mt-5">
-          {{ etapes[indexEtape].contenu }}
-        </p>
-        <footer>
-          <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
-            Précédent
-          </button>
-          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --; timer = etapes[indexEtape].temps">
-            Précédent
-          </button>
-          <button
-            v-if="indexEtape === etapes.length -1"
-            class="button is-medium is-primary"
-            style="float:right;"
-            @click="indexEtape = 0; closeStep()"
-          >
-            Fin
-          </button>
-          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++; timer = etapes[indexEtape].temps">
-            Suivant
-          </button>
-        </footer>
-      </div>
-    </div>
+  </div>
   </div>
 </template>
 <script>
@@ -256,7 +258,6 @@ export default {
       document.body.scrollTop = 0
       document.documentElement.scrollTop = 0
       document.getElementById('fenetreEtape').style = 'display: block;'
-      document.getElementsByTagName('html').style = 'overflow = hidden'
     },
 
     closeStep () {
@@ -292,7 +293,7 @@ export default {
     restart () {
       this.timer = this.etapes[this.indexEtape].temps
       document.getElementById('chrono').style = 'display: block'
-      document.getElementById('chronoRestart').style = 'display: none'
+      document.getElementById('chronoRestart').style = 'display: none;'
     }
   }
 
@@ -347,9 +348,6 @@ export default {
 .blur {
   opacity: 1;
   transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  position: absolute;
-  top: 0px;
-  left: 0px;
   z-index: 1;
   width: 100%;
   height: 100vh;
@@ -378,11 +376,14 @@ footer {
 
 #fenetreEtape {
   display: none;
+  position: sticky;
+  top: 0px;
+  width: 100vw;
 }
 
 #etapeCard {
   width: 80%;
-  height: 80%;
+  min-height: 80%;
   position: absolute; /* postulat de départ */
   top: 50%;
   left: 50%; /* à 50%/50% du parent référent */
@@ -403,9 +404,10 @@ footer {
 
   #etapeCard {
     width: 100%;
-    height: 95%;
+    min-height: 100%;
+    height: auto;
     position: absolute; /* postulat de départ */
-    top: 55%;
+    top: 50%;
     left: 50%; /* à 50%/50% du parent référent */
   }
 
