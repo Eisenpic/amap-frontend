@@ -96,6 +96,10 @@
         <h1 class="is-size-4 ml-4 mt-4">
           <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
         </h1>
+        <p class="has-text-centered p-3">
+          <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
+          <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
+        </p>
         <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
         <p class="ml-4 mt-5">
           {{ etapes[indexEtape].contenu }}
@@ -104,7 +108,7 @@
           <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
             Précédent
           </button>
-          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --">
+          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --; timer = etapes[indexEtape].temps">
             Précédent
           </button>
           <button
@@ -115,7 +119,7 @@
           >
             Fin
           </button>
-          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++">
+          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++; timer = etapes[indexEtape].temps">
             Suivant
           </button>
         </footer>
@@ -125,7 +129,8 @@
 </template>
 <script>
 import axios from 'axios'
-
+import tic from '../assets/sound/tic.mp3'
+import finish from '../assets/sound/finish.mp3'
 export default {
   name: 'RecetteComp',
   // eslint-disable-next-line vue/require-prop-types
@@ -142,6 +147,7 @@ export default {
       type: 'ingredient',
       play: false,
       timer: null,
+      t: null,
       indexEtape: 0
     }
   },
@@ -157,6 +163,10 @@ export default {
         default:
           return 'Not filled in'
       }
+    },
+
+    timerFormat () {
+      return this.timeConv(this.timer)
     }
 
   },
@@ -242,6 +252,7 @@ export default {
     },
 
     displayStep () {
+      this.timer = this.etapes[this.indexEtape].temps
       document.body.scrollTop = 0
       document.documentElement.scrollTop = 0
       document.getElementById('fenetreEtape').style = 'display: block;'
@@ -250,6 +261,38 @@ export default {
 
     closeStep () {
       document.getElementById('fenetreEtape').style = 'display: none;'
+    },
+
+    chronometer () {
+      this.timer--
+      let audio = new Audio(tic)
+      audio.play()
+      if (this.timer === 0) {
+        this.startAndStopTimer()
+        audio = new Audio(finish)
+        audio.play()
+        document.getElementById('chrono').style = 'display: none'
+        document.getElementById('chronoRestart').style = 'display: block; cursor:pointer;'
+        return null
+      }
+    },
+
+    startAndStopTimer () {
+      this.play = !this.play
+
+      if (this.play) {
+        document.getElementById('chrono').style = 'color: red; cursor:pointer;'
+        this.t = setInterval(this.chronometer, 1000)
+      } else {
+        document.getElementById('chrono').style = 'color: inherit; cursor:pointer;'
+        clearInterval(this.t)
+      }
+    },
+
+    restart () {
+      this.timer = this.etapes[this.indexEtape].temps
+      document.getElementById('chrono').style = 'display: block'
+      document.getElementById('chronoRestart').style = 'display: none'
     }
   }
 
@@ -258,6 +301,10 @@ export default {
 </script>
 
 <style scoped>
+
+.cross{
+  float: right;
+}
 
 .btnSelect {
   width: 49.5%;
@@ -360,6 +407,10 @@ footer {
     position: absolute; /* postulat de départ */
     top: 55%;
     left: 50%; /* à 50%/50% du parent référent */
+  }
+
+  footer{
+    bottom: 5%;
   }
 
 }
