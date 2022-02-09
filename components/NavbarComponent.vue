@@ -23,8 +23,8 @@
     <template #end>
       <b-navbar-item v-if="isAuthentificated" tag="div">
         <div class="buttons">
-          <div class="button is-primary mr-2" @click="$router.push(`/profil/${$auth.user.id}`)">
-            <strong>{{ $auth.user.email }}</strong>
+          <div class="button is-primary mr-2" @click="$router.push(`/compte/params`)">
+            <strong> Profil Personnel</strong>
           </div>
           <div class="button is-light" @click="deconnection">
             Déconnexion
