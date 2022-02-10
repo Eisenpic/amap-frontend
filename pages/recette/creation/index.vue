@@ -9,10 +9,16 @@
         étape.
       </h5>
       <b-field label="Nom de la recette">
-        <b-input v-model="nomrecette" name="nomrecette" expanded />
+        <b-input v-model="nomrecette" name="nomrecette" expanded/>
+      </b-field>
+      <b-field label="Description de la recette">
+        <b-input v-model="descrecette" name="nomrecette" expanded/>
       </b-field>
 
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
+        <b-field label="Temps de la recette en minutes">
+          <b-input v-model="tempsrea" name="nomrecette"/>
+        </b-field>
         <b-field label="Saison">
           <b-select v-model="saison" placeholder="Choisir une saison">
             <option value="Été">
@@ -82,51 +88,51 @@
         </b-field>
       </div>
       <b-field label="Nombre d'ingrédients">
-        <b-numberinput v-model="nbing" placeholder="5" min="1" max="15" />
+        <b-numberinput v-model="nbing" placeholder="5" min="1" max="15"/>
       </b-field>
       <h5 class="subtitle is-5">
         Liste des ingrédients :
       </h5>
       <div class="columns is-multiline">
-        <b-input v-model="listing[0]" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet" />
+        <b-input v-model="listing[0]" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet"/>
         <div v-for="n in parseInt(nbing-1)" :key="n" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet">
-          <b-input v-model="listing[n]" />
+          <b-input v-model="listing[n]"/>
         </div>
       </div>
 
       <b-field label="Nombres d'ustensiles">
-        <b-numberinput v-model="nbust" placeholder="5" min="1" max="5" />
+        <b-numberinput v-model="nbust" placeholder="5" min="1" max="5"/>
       </b-field>
       <h5 class="subtitle is-5">
         Liste des ustensiles :
       </h5>
       <div class="columns is-multiline">
-        <b-input v-model="listust[0]" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet" />
+        <b-input v-model="listust[0]" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet"/>
         <div v-for="n in parseInt(nbust-1)" :key="n" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet">
-          <b-input v-model="listust[n]" />
+          <b-input v-model="listust[n]"/>
         </div>
       </div>
 
       <b-field label="Nombres d'étapes de la recette">
-        <b-numberinput v-model="nbetapes" placeholder="5" min="1" max="15" />
+        <b-numberinput v-model="nbetapes" placeholder="5" min="1" max="15"/>
       </b-field>
       <h5 class="title is-5">
-        Etape : {{ 0 }}
+        Etape : 1
       </h5>
       <b-field>
-        <b-input v-model="descetape[0]" type="textarea" />
+        <b-input v-model="descetape[0]" type="textarea"/>
       </b-field>
-      <div v-for="n in parseInt(nbetapes)" :key="n" class="mt-3">
+      <div v-for="n in parseInt(nbetapes-1)" :key="n" class="mt-3">
         <h5 class="title is-5">
-          Etape : {{ n }}
+          Etape : {{ n + 1 }}
         </h5>
         <b-field>
-          <b-input v-model="descetape[n]" type="textarea" />
+          <b-input v-model="descetape[n]" type="textarea"/>
         </b-field>
       </div>
       {{ descetape }}
     </section>
-    <b-button expanded class="button is-primary">
+    <b-button @click="sendRecette" expanded class="button is-primary">
       Envoyer la recette
     </b-button>
   </div>
@@ -138,8 +144,10 @@ export default {
   middleware: 'auth',
   data () {
     return {
-      nomrecette: '',
+      nomrecette: null,
+      descrecette: null,
       difficulte: 1,
+      tempsrea: null,
       saison: 'Été',
       regime: 'Normal',
       nbpers: 1,
@@ -149,6 +157,25 @@ export default {
       descetape: [],
       listing: [],
       listust: []
+    }
+  },
+  methods: {
+    sendRecette () {
+      this.$axios.post('/api/auth/recette', {
+        id_createur: this.$auth.user.id,
+        titre: this.nomrecette,
+        description: this.descrecette,
+        saison: this.saison,
+        difficulte: this.difficulte,
+        temps: this.tempsrea,
+        nb_pers: this.nbpers,
+        regime: this.regime
+      }).then((response) => {
+        // const idrecette = response.data.id
+        this.descetape.forEach((el) => {
+
+        })
+      })
     }
   }
 }
