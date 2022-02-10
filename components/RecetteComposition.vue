@@ -41,7 +41,7 @@
     </div>
     <div v-else class="recipe card">
       <p class="has-text-centered has-text-weight-semibold is-size-2">
-        {{ recipe.titre }}
+        {{ recipe.titre }} <i class="is-size-4">({{recipe.regime}})</i>
       </p>
       <div class="recipe-image  ">
         <b-image :src="recipe.url_img" alt="Placeholder image" />
