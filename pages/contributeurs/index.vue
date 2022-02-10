@@ -26,7 +26,6 @@ export default {
   components: {
     CardContributeur
   },
-  middleware: 'auth',
   data () {
     return {
       contributeurs: [],
@@ -38,10 +37,14 @@ export default {
   computed: {
     filterByTerm () {
       return this.contributeurs.filter((el) => {
-        if (el.id !== this.$auth.user.id) {
-          return el.nom.toLowerCase().includes(this.search.toLowerCase()) || el.prenom.toLowerCase().includes(this.search.toLowerCase())
+        if (this.$auth.loggedIn) {
+          if (el.id !== this.$auth.user.id) {
+            return el.nom.toLowerCase().includes(this.search.toLowerCase()) || el.prenom.toLowerCase().includes(this.search.toLowerCase())
+          } else {
+            return false
+          }
         } else {
-          return false
+          return el.nom.toLowerCase().includes(this.search.toLowerCase()) || el.prenom.toLowerCase().includes(this.search.toLowerCase())
         }
       })
     }
@@ -52,11 +55,15 @@ export default {
         this.contributeurs = response.data
       })
 
-    this.$axios.get(`/api/contributeurs/suivis/${this.$auth.user.id}`)
-      .then((response) => {
-        this.followers = response.data
-        this.ready = true
-      })
+    if (this.$auth.loggedIn) {
+      this.$axios.get(`/api/contributeurs/suivis/${this.$auth.user.id}`)
+        .then((response) => {
+          this.followers = response.data
+          this.ready = true
+        })
+    } else {
+      this.ready = true
+    }
   }
 }
 </script>
