@@ -27,17 +27,6 @@
           <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('nom')" /></b-tooltip>
           <p class="pb-2"><span class="is-underlined">Nom</span> : {{ nom }}</p>
         </div>
-        <div v-if="edit.indexOf('email') !== -1" class="is-flex">
-          <b-tooltip label="Annuler" position="is-top"><i class="fas fa-undo is-clickable" @click="cancelInfos('email')" /></b-tooltip>
-          <p class="pb-2">
-            <span class="is-underlined">Email :</span>
-            <b-input type="email" v-model="email" />
-          </p>
-        </div>
-        <div v-else class="is-flex">
-          <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('email')" /></b-tooltip>
-          <p class="pb-2"><span class="is-underlined">Email</span> : {{ email }}</p>
-        </div>
         <div v-if="edit.indexOf('tel') !== -1" class="is-flex">
           <b-tooltip label="Annuler" position="is-top"><i class="fas fa-undo is-clickable" @click="cancelInfos('tel')" /></b-tooltip>
           <p class="pb-2">
@@ -64,10 +53,6 @@
         <p class="pb-2"><span class="is-underlined">Nom</span> : {{ nom }}</p>
       </div>
       <div class="is-flex">
-        <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('email')" /></b-tooltip>
-        <p class="pb-2"><span class="is-underlined">Email</span> : {{ email }}</p>
-      </div>
-      <div class="is-flex">
         <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('tel')" /></b-tooltip>
         <p class="pb-2"><span class="is-underlined">Téléphone</span> : {{ tel }}</p>
       </div>
@@ -82,12 +67,11 @@
 export default {
   data () {
     return {
-      user: this.$auth.state.user,
+      user: this.$auth.user,
       edit: [],
       message: '',
       prenom: this.$auth.state.user.prenom,
       nom: this.$auth.state.user.nom,
-      email: this.$auth.state.user.email,
       tel: this.$auth.state.user.telephone
     }
   },
@@ -102,13 +86,10 @@ export default {
       this.$axios.put(`/api/users/${this.user.id}`, {
         prenom: this.prenom,
         nom: this.nom,
-        email: this.email,
         tel: this.tel
-      }).then((response) => {
+      }).then(() => {
         this.edit = []
         this.message = 'Informations mises à jour'
-        this.$auth.$storage.setState('user', response.data)
-        this.$auth.setUser(response.data)
         this.$router.go()
       })
     }
