@@ -1,12 +1,12 @@
 <template>
-  <div class="column is-4">
+  <div class="column is-4" style="position: relative">
+    <span id="span_heart" class="icon">
+      <i class="fas fa-heart" />
+    </span>
     <div class="card" @click="$router.push('/recette/' + id)">
       <div class="card-image">
         <div class="headercard is-flex is-justify-content-space-between p-3">
           <p>{{ timeConv }}</p>
-          <span class="icon">
-            <i class="fas fa-heart" />
-          </span>
         </div>
         <figure class="image is-4by3">
           <img :src="photo" alt="Placeholder image">
@@ -105,17 +105,21 @@ div.column p {
   text-overflow: ellipsis;
 }
 
-.headercard span {
+#span_heart{
   transform: scale(1.3);
   color: white;
+  position: absolute;
+  z-index: 9999;
+  right: 20px;
+  top: 25px;
 }
 
-.headercard span i {
+#span_heart i {
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   text-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px;
 }
 
-.headercard span:hover {
+#span_heart:hover {
   transform: scale(1.5);
   color: red;
 }

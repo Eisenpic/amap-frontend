@@ -1,28 +1,22 @@
 <template>
-  <div class="column is-one-quarter-desktop is-half-tablet is-full-mobile card">
+  <div class="column p-0 is-one-quarter-desktop is-half-tablet is-full-mobile card">
     <nuxt-link :to="{name: 'contributeurs-recettes-id', params: { id: contributeur.id }}">
-      <div class="card-image">
+      <div class="card-image m-2">
         <figure class="image is-4by3">
           <img :src="contributeur.url_img" alt="Photo de profil">
         </figure>
       </div>
-      <p class="mb-3 has-text-centered">
+      <p class="has-text-centered m-2">
         {{ fullname }}
       </p>
     </nuxt-link>
-    <div class="card-content has-text-centered px-1 py-1">
-      <div v-if="$auth.loggedIn">
-        <div v-if="suivi">
-          <b-button rounded class="is-small" @click="unfollow">
-            Ne plus suivre
-          </b-button>
-        </div>
-        <div v-else>
-          <b-button rounded class="is-small" @click="follow">
-            Suivre
-          </b-button>
-        </div>
-      </div>
+    <div v-if="$auth.loggedIn" class="card-content has-text-centered px-1 py-1">
+      <b-button v-if="suivi" rounded class="is-small" @click="unfollow">
+        Ne plus suivre
+      </b-button>
+      <b-button v-else rounded class="is-small" @click="follow">
+        Suivre
+      </b-button>
     </div>
   </div>
 </template>
