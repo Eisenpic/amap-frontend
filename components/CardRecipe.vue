@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-4" style="position: relative">
+  <div class="une_recette column is-4" style="position: relative">
     <span id="span_heart" class="icon">
       <i class="fas fa-heart" />
     </span>

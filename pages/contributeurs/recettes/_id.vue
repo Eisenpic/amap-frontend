@@ -42,48 +42,82 @@
       <p class="title is-5 mb-1">
         Dernières recettes
       </p>
-      <b-carousel-list
-        v-model="carousel"
-        :data="recettes.sixDernieres"
-        :items-to-show="3"
-        :has-drag="false"
-        :arrow-hover="false"
-        :autoplay="true"
-        interval="3000"
-      >
-        <template #item="recette">
-          <CardRecipe
-            :id="recette.id"
-            :key="recette.id"
-            :difficulty="recette.difficulte"
-            :recipename="recette.titre"
-            :personnes="recette.nb_pers"
-            :photo="recette.url_img"
-            :time="recette.temps"
-            style="cursor:pointer; height: 100%; width: 100%;"
-          />
-        </template>
-      </b-carousel-list>
+
+      <VueSlickCarousel v-bind="carouselSettings">
+        <CardRecipe
+          v-for="recette in recettes.sixDernieres"
+          :id="recette.id"
+          :key="recette.id"
+          :difficulty="recette.difficulte"
+          :recipename="recette.titre"
+          :personnes="recette.nb_pers"
+          :photo="recette.url_img"
+          :time="recette.temps"
+          style="cursor:pointer;"
+        />
+      </VueSlickCarousel>
     </div>
 
-    <div>
-      <p>Autres recettes</p>
-      <div v-for="recette in recettes.recettes" :key="recette.id">
-        {{ recette.titre }}
+    <div class="m-5 mt-6">
+      <p class="title is-5 mb-1">Autres recettes</p>
+      <div class="columns is-multiline is-justify-content-center">
+        <CardRecipe
+          v-for="recette in recettes.recettes"
+          :id="recette.id"
+          :key="recette.id"
+          :difficulty="recette.difficulte"
+          :recipename="recette.titre"
+          :personnes="recette.nb_pers"
+          :photo="recette.url_img"
+          :time="recette.temps"
+          style="cursor:pointer;"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+
 export default {
   name: 'RecettesContributeur',
+  components: {
+    VueSlickCarousel
+  },
   data () {
     return {
       ready: false,
       contributeur: [],
       recettes: [],
-      carousel: 0
+      carouselSettings: {
+        focusOnSelect: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        touchThreshold: 5,
+        autoplay: true,
+        autoplaySpeed: 3500,
+        pauseOnHover: true,
+        arrows: false,
+        responsive: [
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1
+            }
+          },
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 2
+            }
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -144,11 +178,6 @@ export default {
       })
 
     // récupération des 10 recettes les plus récentes
-  },
-  methods: {
-    info (value) {
-      this.carousel = value
-    }
   }
 }
 </script>
