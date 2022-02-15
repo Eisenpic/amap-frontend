@@ -24,14 +24,13 @@
             </b-menu-list>
           </b-menu>
         </div>
-        <div id="context" class="column is-4 is-offset-3 box has-background-grey-lighter">
-          <div v-if="path === 'default' ">
-            <AccountInfos />
-          </div>
-          <div v-if="path === 'logins' ">
+        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter" >
+          <AccountInfos />
+        </div>
+        <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
             <AccountLogins />
-          </div>
-        </div><br>
+        </div>
+        <br />
       </div>
     </div>
   </section>
