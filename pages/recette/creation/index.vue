@@ -373,6 +373,8 @@ export default {
           id_recette: idrecette,
           ustenciles: this.listust
         })
+      }).finally(() => {
+        this.$router.push('/')
       })
     }
   }
