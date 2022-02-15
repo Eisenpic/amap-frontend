@@ -6,51 +6,79 @@
     <div v-if="edit.length > 0">
       <form @submit.prevent="putInfos">
         <div v-if="edit.indexOf('prenom') !== -1" class="is-flex">
-          <b-tooltip label="Annuler" position="is-top"><i class="fas fa-undo is-clickable" @click="cancelInfos('prenom')" /></b-tooltip>
+          <b-tooltip label="Annuler" position="is-top">
+            <i class="fas fa-undo is-clickable" @click="cancelInfos('prenom')" />
+          </b-tooltip>
           <p class="pb-2">
             <span class="is-underlined">Prénom :</span>
             <b-input v-model="prenom" />
           </p>
         </div>
         <div v-else class="is-flex">
-          <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('prenom')" /></b-tooltip>
-          <p class="pb-2"><span class="is-underlined">Prénom</span> : {{ prenom }}</p>
+          <b-tooltip label="Modifier" position="is-top">
+            <i class="fas fa-pen is-clickable" @click="editInfos('prenom')" />
+          </b-tooltip>
+          <p class="pb-2">
+            <span class="is-underlined">Prénom</span> : {{ prenom }}
+          </p>
         </div>
         <div v-if="edit.indexOf('nom') !== -1" class="is-flex">
-          <b-tooltip label="Annuler" position="is-top"><i class="fas fa-undo is-clickable" @click="cancelInfos('nom')" /></b-tooltip>
+          <b-tooltip label="Annuler" position="is-top">
+            <i class="fas fa-undo is-clickable" @click="cancelInfos('nom')" />
+          </b-tooltip>
           <p class="pb-2">
             <span class="is-underlined">Nom :</span>
             <b-input v-model="nom" />
           </p>
         </div>
         <div v-else class="is-flex">
-          <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('nom')" /></b-tooltip>
-          <p class="pb-2"><span class="is-underlined">Nom</span> : {{ nom }}</p>
+          <b-tooltip label="Modifier" position="is-top">
+            <i class="fas fa-pen is-clickable" @click="editInfos('nom')" />
+          </b-tooltip>
+          <p class="pb-2">
+            <span class="is-underlined">Nom</span> : {{ nom }}
+          </p>
         </div>
         <div v-if="edit.indexOf('tel') !== -1" class="is-flex">
-          <b-tooltip label="Annuler" position="is-top"><i class="fas fa-undo is-clickable" @click="cancelInfos('tel')" /></b-tooltip>
+          <b-tooltip label="Annuler" position="is-top">
+            <i class="fas fa-undo is-clickable" @click="cancelInfos('tel')" />
+          </b-tooltip>
           <p class="pb-2">
             <span class="is-underlined">Téléphone :</span>
-            <b-input type="number" v-model="tel" />
+            <b-input v-model="tel" type="number" />
           </p>
         </div>
         <div v-else class="is-flex">
-          <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('tel')" /></b-tooltip>
-          <p class="pb-2"><span class="is-underlined">Téléphone</span> : {{ tel }}</p>
+          <b-tooltip label="Modifier" position="is-top">
+            <i class="fas fa-pen is-clickable" @click="editInfos('tel')" />
+          </b-tooltip>
+          <p class="pb-2">
+            <span class="is-underlined">Téléphone</span> : {{ tel }}
+          </p>
         </div>
         <div class="has-text-centered">
-          <button class="button" outlined>Valider</button>
+          <button class="button" outlined>
+            Valider
+          </button>
         </div>
       </form>
     </div>
     <div v-else>
       <div class="is-flex">
-        <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('prenom')" /></b-tooltip>
-        <p class="pb-2"><span class="is-underlined">Prénom</span> : {{ prenom }}</p>
+        <b-tooltip label="Modifier" position="is-top">
+          <i class="fas fa-pen is-clickable" @click="editInfos('prenom')" />
+        </b-tooltip>
+        <p class="pb-2">
+          <span class="is-underlined">Prénom</span> : {{ prenom }}
+        </p>
       </div>
       <div class="is-flex">
-        <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('nom')" /></b-tooltip>
-        <p class="pb-2"><span class="is-underlined">Nom</span> : {{ nom }}</p>
+        <b-tooltip label="Modifier" position="is-top">
+          <i class="fas fa-pen is-clickable" @click="editInfos('nom')" />
+        </b-tooltip>
+        <p class="pb-2">
+          <span class="is-underlined">Nom</span> : {{ nom }}
+        </p>
       </div>
       <div class="is-flex">
         <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('tel')" /></b-tooltip>

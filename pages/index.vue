@@ -4,10 +4,10 @@
       <b-field grouped>
         <b-field label="Rechercher" expanded>
           <b-dropdown
-            @input="sortArray"
             v-model="selectedOptions"
             multiple
             aria-role="list"
+            @input="sortArray"
           >
             <template #trigger>
               <b-button
