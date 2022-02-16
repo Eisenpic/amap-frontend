@@ -25,7 +25,7 @@
           </b-menu>
         </div>
         <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter">
-          <account-info />
+          <account-infos />
         </div>
         <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
           <account-logins />
@@ -37,12 +37,9 @@
 </template>
 
 <script>
-import AccountLayout from "../../../components/Account/general/AccountLayout";
-import AccountProfil from "../../../components/Account/general/AccountProfil";
-import AccountLogins from "../../../components/Account/AccountLogins";
+
 export default {
   name: 'ParamsPage',
-  components: {AccountLogins, AccountProfil, AccountLayout},
   middleware: 'auth',
   data () {
     return {
