@@ -12,7 +12,7 @@
     <div>
       <p>Autres recettes</p>
       <div v-for="recette in recettes.recettes" :key="recette.id">
-          {{ recette }}
+        {{ recette }}
       </div>
     </div>
   </div>

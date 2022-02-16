@@ -44,8 +44,9 @@
         </b-field>
       </b-field>
       <div v-if="!filterHide" id="cardFilter" style="border: solid 1px lightgrey" class="p-2">
-        <div class="is-flex is-justify-content-center">
+        <div class="is-flex is-justify-content-center" style="flex-wrap:wrap;">
           <b-dropdown
+            class="mt-2"
             v-model="saisonFilter"
             multiple
             aria-role="list"
@@ -81,6 +82,7 @@
           </b-dropdown>
 
           <b-dropdown
+            class="mt-2"
             v-model="difficulteFilter"
             multiple
             aria-role="list"
@@ -108,6 +110,7 @@
           </b-dropdown>
 
           <b-dropdown
+            class="mt-2"
             v-model="regimeFilter"
             multiple
             aria-role="list"
@@ -151,6 +154,7 @@
           </b-dropdown>
 
           <b-dropdown
+            class="mt-2"
             v-model="produitFilter"
             multiple
             aria-role="list"
@@ -168,6 +172,28 @@
               <span>{{ produit.nom }}</span>
             </b-dropdown-item>
           </b-dropdown>
+        </div>
+
+        <div class="is-flex is-justify-content-center mt-4">
+          <p v-if="panierSelected" class="content" style="margin-top:5px;">
+            <b>Panier de: </b>
+          </p> &nbsp;
+          <b-field>
+            <b-autocomplete
+              v-model="name"
+              rounded
+              :data="filteredPanierArray"
+              field="nom"
+              placeholder="Rechercher un producteur"
+              icon="magnify"
+              clearable
+              @select="option => panierSelected = option"
+            >
+              <template #empty>
+                No results found
+              </template>
+            </b-autocomplete>
+          </b-field>
         </div>
 
         <div style="width:100%;" class="is-flex is-justify-content-center mt-2">
@@ -221,13 +247,26 @@ export default {
       difficulteFilter: ['1', '2', '3'],
       regimeFilter: ['sans gluten', 'végétarien', 'vegan', 'flexitarien', 'hypocalorique', 'carnivore', 'omnivore'],
       produits: [],
-      produitFilter: []
+      produitFilter: [],
+      paniers: [],
+      name: '',
+      panierSelected: null
     }
   },
   computed: {
     searchRecipes () {
       return this.filteredRecipes.filter((recipe) => {
         return recipe.titre.toLowerCase().includes(this.search.toLowerCase())
+      })
+    },
+
+    filteredPanierArray () {
+      return this.paniers.filter((option) => {
+        return (option.nom
+          .toString()
+          .toLowerCase()
+          .includes(this.name.toLowerCase()) >= 0
+        )
       })
     }
   },
@@ -239,8 +278,9 @@ export default {
         this.filteredRecipes = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((erreur) => {
         this.error = true
+        alert('Problème lors de la récupération des recettes: ' + erreur)
       })
       .finally(() => {
         this.loading = false
@@ -253,10 +293,19 @@ export default {
         this.produits.forEach((produit) => {
           this.produitFilter.push(produit.id)
         })
-        this.error = false
       })
-      .catch(() => {
-        this.error = true
+      .catch((erreur) => {
+        alert('Problème lors de la récupération des produits: ' + erreur)
+      })
+
+    this.$axios
+      .get('/api/paniers')
+      .then((response) => {
+        this.paniers = response.data
+        console.log(this.paniers)
+      })
+      .catch((erreur) => {
+        alert('Problème lors de la récupération des paniers: ' + erreur)
       })
   },
   methods: {
@@ -324,6 +373,12 @@ export default {
       arrayFilter = await asyncFilter(arrayFilter, (recipe) => {
         return this.productInRecipe(recipe)
       })
+
+      if (this.panierSelected) {
+        arrayFilter = await asyncFilter(arrayFilter, (recipe) => {
+          return this.productInBasket(recipe)
+        })
+      }
       this.filteredRecipes = arrayFilter
     },
 
@@ -341,7 +396,31 @@ export default {
         return this.produitFilter.includes(element)
       })
       return res
+    },
+
+    async productInBasket (recipe) {
+      const produitsRecetteArray = []
+      const produitsPanierArray = []
+      await this.$axios
+        .get('/api/recette/produits/' + recipe.id)
+        .then((response) => {
+          const produitsRecette = response.data
+          produitsRecette.forEach((produit) => {
+            produitsRecetteArray.push(produit.id_produit)
+          })
+        })
+
+      await this.$axios
+        .get('/api/panier/produits/' + this.panierSelected.id)
+        .then((response) => {
+          const produitsPanier = response.data
+          produitsPanier.forEach((produit) => {
+            produitsPanierArray.push(produit.id_produit)
+          })
+        })
+      return produitsRecetteArray.some(produit => produitsPanierArray.includes(produit))
     }
+
   }
 }
 </script>
