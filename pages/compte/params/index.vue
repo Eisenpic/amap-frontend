@@ -2,10 +2,10 @@
   <section class="columns is-centered">
     <div class="column is-8 box pl-5 pr-5 p-5 mt-6">
       <div>
-        <AccountLayout />
+        <account-layout />
       </div>
       <div class="mb-6">
-        <AccountProfil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" />
+        <account-profil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" />
       </div>
       <div class="columns mt-5">
         <div class="column is-3 box p-2 has-background-grey-lighter">
@@ -24,21 +24,25 @@
             </b-menu-list>
           </b-menu>
         </div>
-        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter" >
-          <AccountInfos />
+        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter">
+          <account-info />
         </div>
         <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
-            <AccountLogins />
+          <account-logins />
         </div>
-        <br />
+        <br>
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import AccountLayout from "../../../components/Account/general/AccountLayout";
+import AccountProfil from "../../../components/Account/general/AccountProfil";
+import AccountLogins from "../../../components/Account/AccountLogins";
 export default {
   name: 'ParamsPage',
+  components: {AccountLogins, AccountProfil, AccountLayout},
   middleware: 'auth',
   data () {
     return {

@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="columns is-multiline is-justify-content-center">
-      <InscriptionComponent />
+      <inscription-component />
     </div>
   </section>
 </template>

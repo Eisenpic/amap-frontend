@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <ConnexionForm />
+    <connexion-form />
   </section>
 </template>
 

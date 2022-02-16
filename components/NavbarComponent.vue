@@ -34,16 +34,16 @@
 
       <b-navbar-item v-else tag="div">
         <div class="buttons">
-          <Nuxt-Link to="/inscription">
+          <nuxt-link to="/inscription">
             <div class="button is-primary mr-2">
               <strong>Inscription</strong>
             </div>
-          </Nuxt-Link>
-          <Nuxt-Link to="/connexion">
+          </nuxt-link>
+          <nuxt-link to="/connexion">
             <div class="button is-light">
               Connexion
             </div>
-          </Nuxt-Link>
+          </nuxt-link>
         </div>
       </b-navbar-item>
     </template>
