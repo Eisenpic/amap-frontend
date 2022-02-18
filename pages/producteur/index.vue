@@ -16,12 +16,16 @@
         :data="filteredDataObj"
         field="nom"
         :clearable="true"
+        expanded
         @select="option => (selected = option)"
       />
+      <button class="button" @click.prevent="addToCart">
+        Ajouter
+      </button>
     </b-field>
     <div class="mt-3">
       <template v-for="ing in panier">
-        <PanierItems :key="ing.id" :nom="ing.nom"/>
+        <PanierItems @refresh="majPanier" :key="ing.id" :idprod="ing.id" :nom="ing.nom" class="mt-3"/>
       </template>
     </div>
   </div>
@@ -29,7 +33,7 @@
 
 <script>
 
-import PanierItems from '../../components/Account/PanierItems'
+import PanierItems from '../../components/PanierItems'
 
 export default {
   name: 'ProducteurPage',
@@ -51,12 +55,40 @@ export default {
       })
     }
   },
+  methods: {
+    addToCart () {
+      if (this.selected !== null) {
+        this.$axios.post(`/api/panier/${this.$auth.user.id}/${this.selected.id}`).then((response) => {
+          const res = {
+            id: this.selected.id,
+            nom: this.selected.nom
+          }
+
+          this.panier.push(res)
+        }).catch(() => {
+          this.$buefy.snackbar.open({
+            message: "Impossible d'ajouter un élement déjà présent dans votre panier.",
+            type: 'is-danger',
+            position: 'is-bottom'
+          })
+        })
+      } else {
+        this.$buefy.snackbar.open({
+          message: 'Vous devez spécifier un ingrédient à ajouter avant de valider',
+          type: 'is-danger',
+          position: 'is-bottom'
+        })
+      }
+    },
+    majPanier (id) {
+      this.panier = this.panier.filter(el => el.id !== id)
+    }
+  },
   mounted () {
     this.$axios.get('/api/ingredients').then((response) => {
       this.ingredients = response.data
     })
     this.$axios.get(`/api/panier/${this.$auth.user.id}`).then((response) => {
-      console.log(response.data)
       this.panier = response.data
     })
   }
