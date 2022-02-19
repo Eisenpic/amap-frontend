@@ -335,7 +335,7 @@ export default {
       })
 
     this.$axios
-      .get('/api/paniers')
+      .get('/api/producteurs')
       .then((response) => {
         this.paniers = response.data
       })
@@ -344,7 +344,6 @@ export default {
       })
 
     const today = Date.parse(new Date())
-    console.log(new Date())
     const year = new Date().getFullYear()
     const spring = Date.parse(new Date(year, 2, 21))
     const summer = Date.parse(new Date(year, 5, 21))
