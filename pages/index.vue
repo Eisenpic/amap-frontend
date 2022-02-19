@@ -44,7 +44,8 @@
         </b-field>
       </b-field>
       <div v-if="!filterHide" id="cardFilter" style="border: solid 1px lightgrey" class="p-2">
-        <div class="is-flex is-justify-content-center" style="flex-wrap:wrap;">
+        <p class="has-text-centered mt-5"><i>Sélectionnez ou désélectionnez les cases des différentes listes déroulantes puis appuyez sur le bouton "filtrer" pour filtrer à votre guise 😄</i></p>
+        <div class="is-flex is-justify-content-center mt-5" style="flex-wrap:wrap;">
           <b-dropdown
             v-model="saisonFilter"
             class="mt-2"
@@ -210,9 +211,12 @@
           </b-dropdown>
         </div>
 
-        <div class="is-flex is-justify-content-center mt-4">
+        <div id="filtrePanier" class="is-flex is-justify-content-center mt-4">
           <p v-if="panierSelected" class="content" style="margin-top:5px;">
             <b>Panier de: </b>
+          </p>
+          <p v-else class="content" style="margin-top:5px;">
+            <b>Filtrez par votre panier</b>
           </p> &nbsp;
           <b-field>
             <b-autocomplete
@@ -435,8 +439,6 @@ export default {
         })
       }
       this.filteredRecipes = arrayFilter
-
-      console.log(this.filteredRecipes)
     },
 
     async productInRecipe (recipe) {
@@ -485,6 +487,10 @@ export default {
 .dropdown-menu{
   max-height:200px;
   overflow-y:auto;
+}
+
+#filtrePanier > .dropdown-menu{
+  overflow-y:hidden;
 }
 
 </style>
