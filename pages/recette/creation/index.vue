@@ -22,17 +22,20 @@
         </b-field>
         <b-field label="Saison">
           <b-select v-model="saison" placeholder="Choisir une saison">
-            <option value="Été">
+            <option value="été">
               Été
             </option>
-            <option value="Automne">
+            <option value="automne">
               Automne
             </option>
-            <option value="Printemps">
+            <option value="printemps">
               Printemps
             </option>
-            <option value="Hiver">
+            <option value="hiver">
               Hiver
+            </option>
+            <option value="toutes">
+              Toutes
             </option>
           </b-select>
         </b-field>
@@ -51,14 +54,33 @@
         </b-field>
         <b-field label="Régime">
           <b-select v-model="regime" placeholder="Choisir un régime">
-            <option value="Normal">
+            <option value="normal">
               Normal
             </option>
-            <option value="Végétarien">
+            <option value="végétarien">
               Végétarien
             </option>
-            <option value="Végan">
+            <option value="végan">
               Végan
+            </option>
+          </b-select>
+        </b-field>
+        <b-field label="Type de plat">
+          <b-select v-model="typeplat" placeholder="Choisir un régime">
+            <option value="entrée">
+              Entrée
+            </option>
+            <option value="plat">
+              Plat
+            </option>
+            <option value="dessert">
+              Dessert
+            </option>
+            <option value="collation">
+              Collation
+            </option>
+            <option value="boisson">
+              Boisson
             </option>
           </b-select>
         </b-field>
@@ -185,8 +207,9 @@ export default {
       descrecette: null,
       difficulte: 1,
       tempsrea: null,
-      saison: 'Été',
-      regime: 'Normal',
+      saison: 'été',
+      regime: 'normal',
+      typeplat: 'entrée',
       nbpers: 1,
       nbing: 1,
       nbetapes: 1,
@@ -358,7 +381,8 @@ export default {
         difficulte: this.difficulte,
         temps: this.tempsrea,
         nb_pers: this.nbpers,
-        regime: this.regime
+        regime: this.regime,
+        type: this.typeplat
       }).then((response) => {
         const idrecette = response.data.id
         this.$axios.post('/api/auth/etape', {
