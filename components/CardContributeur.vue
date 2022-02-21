@@ -49,8 +49,8 @@ export default {
       }
     },
     unfollow () {
-      this.$axios.delete(`/api/contributeur/${this.$auth.user.id}/unfollow/${this.contributeur.id}`)
-        .then((response) => {
+      this.$axios.delete(`/api/contributeur/${this.$auth.$state.user.id}/unfollow/${this.contributeur.id}`)
+        .then(() => {
           this.suivi = false
         })
         .catch(() => {
@@ -58,8 +58,8 @@ export default {
         })
     },
     follow () {
-      this.$axios.post(`/api/contributeur/${this.$auth.user.id}/suivre/${this.contributeur.id}`)
-        .then((response) => {
+      this.$axios.post(`/api/contributeur/${this.$auth.$state.user.id}/suivre/${this.contributeur.id}`)
+        .then(() => {
           this.suivi = true
         })
         .catch(() => {
