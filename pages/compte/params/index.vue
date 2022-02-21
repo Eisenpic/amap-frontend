@@ -24,7 +24,7 @@
             </b-menu-list>
           </b-menu>
         </div>
-        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter" >
+        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter">
           <AccountInfos />
         </div>
         <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
@@ -33,7 +33,7 @@
         <div v-if="path === 'expertises'" class="column is-5 is-offset-2 box has-background-grey-lighter">
           <AccountExpertise :expertises="expertises" :member-expertises="memberExpertises" :member="member" />
         </div>
-        <br />
+        <br>
       </div>
     </div>
   </section>

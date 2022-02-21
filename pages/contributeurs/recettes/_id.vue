@@ -72,6 +72,7 @@
           :time="recette.temps"
           style="cursor:pointer;"
         />
+        
       </div>
     </div>
   </div>
