@@ -6,7 +6,7 @@
         <h1 class="is-size-4 ml-4 mt-4">
           <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
         </h1>
-        <p class="has-text-centered p-3">
+        <p v-if="etapes[indexEtape].temps" class="has-text-centered p-3">
           <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
           <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
         </p>
