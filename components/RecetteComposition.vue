@@ -1,11 +1,47 @@
 <template>
-  <div v-if="!loading">
+  <div>
+    <div v-if="etapes" id="fenetreEtape" class="blur">
+      <div id="etapeCard" class="card p-4">
+        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="closeStep()" />
+        <h1 class="is-size-4 ml-4 mt-4">
+          <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
+        </h1>
+        <p v-if="etapes[indexEtape].temps" class="has-text-centered p-3">
+          <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
+          <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
+        </p>
+        <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
+        <p class="ml-4 mt-5 contenu">
+          {{ etapes[indexEtape].contenu }}
+        </p>
+        <footer>
+          <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
+            Précédent
+          </button>
+          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --; timer = etapes[indexEtape].temps">
+            Précédent
+          </button>
+          <button
+            v-if="indexEtape === etapes.length -1"
+            class="button is-medium is-primary"
+            style="float:right;"
+            @click="indexEtape = 0; closeStep()"
+          >
+            Fin
+          </button>
+          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++; timer = etapes[indexEtape].temps">
+            Suivant
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div v-if="!loading">
     <div v-if="error">
       <p>{{ messageError }}</p>
     </div>
     <div v-else class="recipe card">
       <p class="has-text-centered has-text-weight-semibold is-size-2">
-        {{ recipe.titre }}
+        {{ recipe.titre }} <i class="is-size-4">({{recipe.regime}})</i>
       </p>
       <div class="recipe-image  ">
         <b-image :src="recipe.url_img" alt="Placeholder image" />
@@ -90,42 +126,13 @@
         </b-button>
       </div>
     </div>
-    <div v-if="etapes" id="fenetreEtape" class="blur">
-      <div id="etapeCard" class="card p-4">
-        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="closeStep()" />
-        <h1 class="is-size-4 ml-4 mt-4">
-          <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
-        </h1>
-        <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
-        <p class="ml-4 mt-5">
-          {{ etapes[indexEtape].contenu }}
-        </p>
-        <footer>
-          <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
-            Précédent
-          </button>
-          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --">
-            Précédent
-          </button>
-          <button
-            v-if="indexEtape === etapes.length -1"
-            class="button is-medium is-primary"
-            style="float:right;"
-            @click="indexEtape = 0; closeStep()"
-          >
-            Fin
-          </button>
-          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++">
-            Suivant
-          </button>
-        </footer>
-      </div>
-    </div>
+  </div>
   </div>
 </template>
 <script>
 import axios from 'axios'
-
+import tic from '../assets/sound/tic.mp3'
+import finish from '../assets/sound/finish.mp3'
 export default {
   name: 'RecetteComp',
   // eslint-disable-next-line vue/require-prop-types
@@ -142,6 +149,7 @@ export default {
       type: 'ingredient',
       play: false,
       timer: null,
+      t: null,
       indexEtape: 0
     }
   },
@@ -157,6 +165,10 @@ export default {
         default:
           return 'Not filled in'
       }
+    },
+
+    timerFormat () {
+      return this.timeConv(this.timer)
     }
 
   },
@@ -242,14 +254,46 @@ export default {
     },
 
     displayStep () {
+      this.timer = this.etapes[this.indexEtape].temps
       document.body.scrollTop = 0
       document.documentElement.scrollTop = 0
       document.getElementById('fenetreEtape').style = 'display: block;'
-      document.getElementsByTagName('html').style = 'overflow = hidden'
     },
 
     closeStep () {
       document.getElementById('fenetreEtape').style = 'display: none;'
+    },
+
+    chronometer () {
+      this.timer--
+      let audio = new Audio(tic)
+      audio.play()
+      if (this.timer === 0) {
+        this.startAndStopTimer()
+        audio = new Audio(finish)
+        audio.play()
+        document.getElementById('chrono').style = 'display: none'
+        document.getElementById('chronoRestart').style = 'display: block; cursor:pointer;'
+        return null
+      }
+    },
+
+    startAndStopTimer () {
+      this.play = !this.play
+
+      if (this.play) {
+        document.getElementById('chrono').style = 'color: red; cursor:pointer;'
+        this.t = setInterval(this.chronometer, 1000)
+      } else {
+        document.getElementById('chrono').style = 'color: inherit; cursor:pointer;'
+        clearInterval(this.t)
+      }
+    },
+
+    restart () {
+      this.timer = this.etapes[this.indexEtape].temps
+      document.getElementById('chrono').style = 'display: block'
+      document.getElementById('chronoRestart').style = 'display: none;'
     }
   }
 
@@ -258,6 +302,10 @@ export default {
 </script>
 
 <style scoped>
+
+.cross{
+  float: right;
+}
 
 .btnSelect {
   width: 49.5%;
@@ -300,9 +348,6 @@ export default {
 .blur {
   opacity: 1;
   transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  position: absolute;
-  top: 0px;
-  left: 0px;
   z-index: 1;
   width: 100%;
   height: 100vh;
@@ -331,11 +376,14 @@ footer {
 
 #fenetreEtape {
   display: none;
+  position: sticky;
+  top: 0px;
+  width: 100vw;
 }
 
 #etapeCard {
   width: 80%;
-  height: 80%;
+  min-height: 80%;
   position: absolute; /* postulat de départ */
   top: 50%;
   left: 50%; /* à 50%/50% du parent référent */
@@ -356,10 +404,15 @@ footer {
 
   #etapeCard {
     width: 100%;
-    height: 95%;
+    min-height: 100%;
+    height: auto;
     position: absolute; /* postulat de départ */
-    top: 55%;
+    top: 50%;
     left: 50%; /* à 50%/50% du parent référent */
+  }
+
+  footer{
+    bottom: 5%;
   }
 
 }
