@@ -336,9 +336,6 @@ export default {
       .get('/api/produits')
       .then((response) => {
         this.produits = response.data
-        this.produits.forEach((produit) => {
-          this.produitFilter.push(produit.id)
-        })
       })
       .catch((erreur) => {
         alert('Problème lors de la récupération des produits: ' + erreur)
@@ -460,9 +457,11 @@ export default {
             produitsRecetteArray.push(produit.id_produit)
           })
         })
-      const res = produitsRecetteArray.every((element) => {
-        return this.produitFilter.includes(element)
+
+      const res = this.produitFilter.every((element) => {
+        return produitsRecetteArray.includes(element)
       })
+
       return res
     },
 
