@@ -58,7 +58,7 @@
       </VueSlickCarousel>
     </div>
 
-    <div class="m-5 mt-6">
+    <div v-if="recettes.recettes" class="m-5 mt-6">
       <p class="title is-5 mb-1">Autres recettes</p>
       <div class="columns is-multiline is-justify-content-center">
         <CardRecipe
