@@ -8,16 +8,20 @@
     </div>
     <div v-for="(expertise, index) in memberExpertises" v-else :key="index" class="is-flex">
       <b-tooltip label="Supprimer" position="is-top">
-        <b-button class="mt-3" id="b-delete" @click="deleteExpertise(expertise.id)"><b-icon icon="delete"></b-icon></b-button>
+        <b-button id="b-delete" class="mt-3" @click="deleteExpertise(expertise.id)">
+          <b-icon icon="delete" />
+        </b-button>
       </b-tooltip>
-      <div class="box p-2 my-3 ml-2" id="d-expertise">
+      <div id="d-expertise" class="box p-2 my-3 ml-2">
         {{ expertise.nom }}
       </div>
     </div>
     <div v-if="selectExpertise" class="has-text-centered mt-3">
       <b-dropdown v-model="selectedExpertise" aria-role="list" text="Dropdown" scrollable :max-height="200">
         <template #trigger>
-          <b-button type="is-primary" icon-right="menu-down">Ajouter une expertise</b-button>
+          <b-button type="is-primary" icon-right="menu-down">
+            Ajouter une expertise
+          </b-button>
         </template>
         <div v-for="(showedExpertise, index) in showedExpertises" :key="index">
           <b-dropdown-item :value="showedExpertise" aria-role="listitem">
@@ -29,12 +33,16 @@
         <i class="fas fa-star mt-3 mr-4" />{{ selectedExpertise.nom }}
       </div>
       <div class="has-text-centered">
-        <b-button class="mt-3 b-add" @click="attachExpertise">Valider</b-button>
+        <b-button class="mt-3 b-add" @click="attachExpertise">
+          Valider
+        </b-button>
       </div>
     </div>
     <div v-else>
       <div class="has-text-centered">
-        <b-button class="b-add" @click="addExpertise">Ajouter</b-button>
+        <b-button class="b-add" @click="addExpertise">
+          Ajouter
+        </b-button>
       </div>
     </div>
     <div v-if="message" class="has-text-centered mt-3">
@@ -79,6 +87,11 @@ export default {
         if (!this.memberExpertises.some(memberExpertise => memberExpertise.id === expertise.id)) {
           this.showedExpertises.push(expertise)
         }
+      })
+      this.showedExpertises.sort(function (a, b) {
+        if (a.nom < b.nom) { return -1 }
+        if (a.nom > b.nom) { return 1 }
+        return 0
       })
     }
   }

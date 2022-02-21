@@ -2,10 +2,10 @@
   <section class="columns is-centered">
     <div id="container" class="column is-8 box pl-5 pr-5 p-5 mt-6">
       <div>
-        <AccountLayout />
+        <account-layout />
       </div>
       <div class="mb-6">
-        <AccountProfil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" :member-expertises="memberExpertises" />
+        <account-profil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" :member-expertises="memberExpertises" />
       </div>
       <div class="columns mt-5">
         <div class="column is-3 box p-2 has-background-grey-lighter">
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'ParamsPage',
   middleware: 'auth',

@@ -29,9 +29,11 @@
               <span>Temps de réalisation</span>
             </b-dropdown-item>
 
-            <b-dropdown-item v-if="$auth.loggedIn" value="utisuivis" aria-role="listitem">
-              <span>Utilisateurs suivis</span>
-            </b-dropdown-item>
+            <client-only>
+              <b-dropdown-item v-if="$auth.loggedIn" value="utisuivis" aria-role="listitem">
+                <span>Utilisateurs suivis</span>
+              </b-dropdown-item>
+            </client-only>
           </b-dropdown>
           <b-input v-model="search" type="text" placeholder="Rechercher..." expanded />
           <b-button
@@ -44,7 +46,9 @@
         </b-field>
       </b-field>
       <div v-if="!filterHide" id="cardFilter" style="border: solid 1px lightgrey" class="p-2">
-        <p class="has-text-centered mt-5"><i>Sélectionnez ou désélectionnez les cases des différentes listes déroulantes puis appuyez sur le bouton "filtrer" pour filtrer à votre guise 😄</i></p>
+        <p class="has-text-centered mt-5">
+          <i>Sélectionnez ou désélectionnez les cases des différentes listes déroulantes puis appuyez sur le bouton "filtrer" pour filtrer à votre guise 😄</i>
+        </p>
         <div class="is-flex is-justify-content-center mt-5" style="flex-wrap:wrap;">
           <b-dropdown
             v-model="saisonFilter"
@@ -243,16 +247,18 @@
         </div>
       </div>
     </div>
-    <div class="is-flex">
-      <b-button v-if="$auth.loggedIn" type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
-    </div>
+    <client-only>
+      <div v-if="$auth.loggedIn" class="is-flex">
+        <b-button type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
+      </div>
+    </client-only>
     <div v-if="error">
       <p>Erreur lors de la récupération des recettes</p>
     </div>
     <div v-else class="columns is-multiline is-justify-content-center">
       <b-loading v-model="loading" :is-full-page="false" />
-      <CardRecipe
-        v-for="recipe in searchRecipes"
+      <card-recipe
+        v-for="recipe in filteredRecipes"
         :id="recipe.id"
         :key="recipe.id"
         :difficulty="recipe.difficulte"
@@ -295,9 +301,9 @@ export default {
     }
   },
   computed: {
-    searchRecipes () {
-      return this.filteredRecipes.filter((recipe) => {
-        return recipe.titre.toLowerCase().includes(this.search.toLowerCase())
+    filteredRecipes () {
+      return this.recipes.filter((recipe) => {
+        return recipe?.titre?.toLowerCase().includes(this.search?.toLowerCase())
       })
     },
 
