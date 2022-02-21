@@ -15,8 +15,6 @@
               <b-menu-item v-else icon="information-outline" label="Informations Personnelles" disabled />
               <b-menu-item v-if="path !== 'expertises'" icon="star" label="Mes Expertises" @click="moove('expertises')" />
               <b-menu-item v-else icon="star" label="Mes Expertises" disabled />
-              <b-menu-item v-if="path !== 'logins'" icon="key" label="Identifiant et Mot de passe" @click="moove('logins')" />
-              <b-menu-item v-else label="Identifiant et Mot de passe" disabled />
               <b-menu-item v-if="path !== 'avatar'" icon="account" label="Modification Avatar" @click="moove('avatar')" />
               <b-menu-item v-else icon="account" label="Modification Avatar" disabled />
               <b-menu-item v-if="path !== 'delete'" icon="delete" label="Suppression Compte" @click="moove('delete')" />
@@ -26,9 +24,6 @@
         </div>
         <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter">
           <AccountInfos />
-        </div>
-        <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
-          <AccountLogins />
         </div>
         <div v-if="path === 'expertises'" class="column is-5 is-offset-2 box has-background-grey-lighter">
           <AccountExpertise :expertises="expertises" :member-expertises="memberExpertises" :member="member" />
