@@ -87,14 +87,16 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get(`/api/users/${this.$auth.$state.user.id}/liked`)
-      .then((response) => {
-        response.data.forEach((el) => {
-          if (el.id === this.id) {
-            this.isLiked = true
-          }
+    if (this.$auth.loggedIn) {
+      this.$axios.get(`/api/users/${this.$auth.$state.user.id}/liked`)
+        .then((response) => {
+          response.data.forEach((el) => {
+            if (el.id === this.id) {
+              this.isLiked = true
+            }
+          })
         })
-      })
+    }
   },
   methods: {
     likeRecipe () {
