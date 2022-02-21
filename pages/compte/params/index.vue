@@ -1,11 +1,11 @@
 <template>
   <section class="columns is-centered">
-    <div class="column is-8 box pl-5 pr-5 p-5 mt-6">
+    <div id="container" class="column is-8 box pl-5 pr-5 p-5 mt-6">
       <div>
         <AccountLayout />
       </div>
       <div class="mb-6">
-        <AccountProfil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" />
+        <AccountProfil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" :member-expertises="memberExpertises" />
       </div>
       <div class="columns mt-5">
         <div class="column is-3 box p-2 has-background-grey-lighter">
@@ -30,6 +30,9 @@
         <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
           <AccountLogins />
         </div>
+        <div v-if="path === 'expertises'" class="column is-5 is-offset-2 box has-background-grey-lighter">
+          <AccountExpertise :expertises="expertises" :member-expertises="memberExpertises" :member="member" />
+        </div>
         <br>
       </div>
     </div>
@@ -47,17 +50,20 @@ export default {
       nbAvis: 0,
       topics: [],
       nbTopics: 0,
-      path: 'default'
+      path: 'default',
+      expertises: [],
+      memberExpertises: []
     }
   },
   mounted () {
     this.chargerAvis()
     this.chargerTopics()
+    this.chargerExpertises()
+    this.chargerMemberExpertises()
   },
   methods: {
     moove (path) {
       this.path = path
-      console.log(this.path)
     },
     chargerAvis () {
       this.$axios.get(`/api/users/${this.member.id}/avis`).then((response) => {
@@ -69,6 +75,16 @@ export default {
       this.$axios.get(`/api/users/${this.member.id}/topics`).then((response) => {
         this.topics = response.data
         this.nbTopics = response.data.length
+      })
+    },
+    chargerExpertises () {
+      this.$axios.get('/api/expertises').then((response) => {
+        this.expertises = response.data
+      })
+    },
+    chargerMemberExpertises () {
+      this.$axios.get(`/api/users/${this.member.id}/expertises`).then((response) => {
+        this.memberExpertises = response.data
       })
     }
   }

@@ -10,7 +10,7 @@
 export default {
   data () {
     return {
-      user: this.$store.state.user
+      user: this.$auth.$state.user
     }
   }
 }

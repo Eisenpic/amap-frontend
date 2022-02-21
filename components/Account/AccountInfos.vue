@@ -100,12 +100,12 @@
 export default {
   data () {
     return {
-      user: this.$auth.state.user,
+      user: this.$auth.$state.user,
       edit: [],
       message: '',
-      prenom: this.$auth.state.user.prenom,
-      nom: this.$auth.state.user.nom,
-      tel: this.$auth.state.user.telephone
+      prenom: this.$auth.$state.user.prenom,
+      nom: this.$auth.$state.user.nom,
+      tel: this.$auth.$state.user.telephone
     }
   },
   methods: {
