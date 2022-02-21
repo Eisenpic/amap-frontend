@@ -23,7 +23,7 @@
           </button>
           <button
             v-if="indexEtape === etapes.length -1"
-            class="button is-medium is-primary"
+            class="button is-medium is-primary mr-5"
             style="float:right;"
             @click="indexEtape = 0; closeStep()"
           >
