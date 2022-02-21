@@ -417,6 +417,8 @@ export default {
     },
 
     async filtrer () {
+      this.loading = true
+      this.filterHide = !this.filterHide
       let arrayFilter = this.recipes
 
       arrayFilter = arrayFilter.filter((recipe) => { return this.saisonFilter.includes(recipe.saison) })
@@ -439,6 +441,7 @@ export default {
         })
       }
       this.filteredRecipes = arrayFilter
+      this.loading = false
     },
 
     async productInRecipe (recipe) {
