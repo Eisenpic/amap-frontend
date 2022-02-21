@@ -39,6 +39,7 @@
             <span class="is-underlined">Nom</span> : {{ nom }}
           </p>
         </div>
+
         <div v-if="edit.indexOf('tel') !== -1" class="is-flex">
           <b-tooltip label="Annuler" position="is-top">
             <i class="fas fa-undo is-clickable" @click="cancelInfos('tel')" />
@@ -99,12 +100,12 @@
 export default {
   data () {
     return {
-      user: this.$auth.state.user,
+      user: this.$auth.$state.user,
       edit: [],
       message: '',
-      prenom: this.$auth.state.user.prenom,
-      nom: this.$auth.state.user.nom,
-      tel: this.$auth.state.user.telephone
+      prenom: this.$auth.$state.user.prenom,
+      nom: this.$auth.$state.user.nom,
+      tel: this.$auth.$state.user.telephone
     }
   },
   methods: {
