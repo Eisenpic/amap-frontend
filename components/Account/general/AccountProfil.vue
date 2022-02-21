@@ -2,7 +2,7 @@
   <div>
     <div>
       <figure class="image is-128x128 mr-3">
-        <b-tooltip v-if="memberExpertises.length !== 0" label="Expert" position="is-top" id="tooltip-star">
+        <b-tooltip v-if="memberExpertises.length !== 0" id="tooltip-star" label="Expert" position="is-top">
           <i class="fas fa-star" />
         </b-tooltip>
         <img src="http://images5.fanpop.com/image/photos/31700000/Bulma-braid-hair-icon-dragon-ball-females-31777843-150-150.jpg" alt="avatar">

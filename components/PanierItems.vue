@@ -4,7 +4,9 @@
       <p>{{ nom }}</p>
     </div>
     <div>
-      <button class="button is-danger" @click="deleteItem">Supprimer</button>
+      <button class="button is-danger" @click="deleteItem">
+        Supprimer
+      </button>
     </div>
   </div>
 </template>

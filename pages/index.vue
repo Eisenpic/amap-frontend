@@ -46,7 +46,9 @@
         </b-field>
       </b-field>
       <div v-if="!filterHide" id="cardFilter" style="border: solid 1px lightgrey" class="p-2">
-        <p class="has-text-centered mt-5"><i>Sélectionnez ou désélectionnez les cases des différentes listes déroulantes puis appuyez sur le bouton "filtrer" pour filtrer à votre guise 😄</i></p>
+        <p class="has-text-centered mt-5">
+          <i>Sélectionnez ou désélectionnez les cases des différentes listes déroulantes puis appuyez sur le bouton "filtrer" pour filtrer à votre guise 😄</i>
+        </p>
         <div class="is-flex is-justify-content-center mt-5" style="flex-wrap:wrap;">
           <b-dropdown
             v-model="saisonFilter"
