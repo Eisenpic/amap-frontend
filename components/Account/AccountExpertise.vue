@@ -3,12 +3,12 @@
     <h1 class="pb-4 is-size-5 is-center">
       Mes Expertises
     </h1>
-    <div v-if="memberExpertises.length === 0" class="has-text-centered mb-5 mt-2">
+    <div v-if="memberExpertisesNew.length === 0" class="has-text-centered mb-5 mt-2">
       Vous n'avez aucunes expertise
     </div>
-    <div v-for="(expertise, index) in memberExpertises" v-else :key="index" class="is-flex">
+    <div v-for="(expertise, index) in memberExpertisesNew" v-else :key="index" class="is-flex">
       <b-tooltip label="Supprimer" position="is-top">
-        <b-button id="b-delete" class="mt-3" @click="deleteExpertise(expertise.id)">
+        <b-button id="b-delete" class="mt-3" @click="deleteExpertise(expertise)">
           <b-icon icon="delete" />
         </b-button>
       </b-tooltip>
@@ -39,7 +39,10 @@
       </div>
     </div>
     <div v-else>
-      <div class="has-text-centered">
+      <div v-if="showedExpertises.length === 0">
+        <p>Vous êtes expert dans tous les domaines</p>
+      </div>
+      <div v-else class="has-text-centered">
         <b-button class="b-add" @click="addExpertise">
           Ajouter
         </b-button>
@@ -60,31 +63,40 @@ export default {
       message: '',
       showedExpertises: [],
       selectExpertise: false,
-      selectedExpertise: ''
+      selectedExpertise: '',
+      memberExpertisesNew: this.memberExpertises
     }
   },
   mounted () {
     this.filterExpertises()
   },
   methods: {
-    deleteExpertise (idExpertise) {
-      /* Delete method doesn't work in api */this.$axios.get(`/api/users/${this.member.id}/expertises/${idExpertise}`).then(() => {
+    deleteExpertise (expertise) {
+      /* Delete method doesn't work in api */this.$axios.delete(`/api/users/${this.member.id}/expertises/${expertise.id}`).then(() => {
         this.message = 'Expertise supprimée'
-        this.$router.go()
       })
+      this.memberExpertisesNew = this.memberExpertisesNew.filter(el => el.id !== expertise.id)
+      this.showedExpertises.push(expertise)
     },
     addExpertise () {
       this.selectExpertise = true
     },
     attachExpertise () {
-      this.$axios.post(`/api/users/${this.member.id}/expertises/${this.selectedExpertise.id}`).then(() => {
-        this.message = 'Expertise ajoutée'
-        this.$router.go()
-      })
+      if (this.selectedExpertise === '') {
+        this.message = 'Veuillez séléctionner une expertise'
+      } else {
+        this.$axios.post(`/api/users/${this.member.id}/expertises/${this.selectedExpertise.id}`).then(() => {
+          this.message = 'Expertise ajoutée'
+        })
+        this.memberExpertisesNew.push(this.selectedExpertise)
+        this.selectExpertise = false
+        this.showedExpertises = this.showedExpertises.filter(el => el.id !== this.selectedExpertise.id)
+        this.selectedExpertise = ''
+      }
     },
     filterExpertises () {
       this.expertises.forEach((expertise) => {
-        if (!this.memberExpertises.some(memberExpertise => memberExpertise.id === expertise.id)) {
+        if (!this.memberExpertisesNew.some(memberExpertise => memberExpertise.id === expertise.id)) {
           this.showedExpertises.push(expertise)
         }
       })

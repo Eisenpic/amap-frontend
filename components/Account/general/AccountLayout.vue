@@ -1,6 +1,6 @@
 <template>
   <div class="columns is-centered">
-    <div class="column is-4 is-half mb-6">
+    <div class="column is-10 is-half mb-6">
       <b-navbar centered style="border-radius: 5px" class="is-primary">
         <template #start>
           <b-navbar-item id="layout" tag="nuxt-link" to="/compte/params" class="is-size-5">
