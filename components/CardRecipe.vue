@@ -109,7 +109,7 @@ div.column p {
   transform: scale(1.3);
   color: white;
   position: absolute;
-  z-index: 9999;
+  z-index: 2;
   right: 20px;
   top: 25px;
 }
