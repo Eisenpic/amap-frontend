@@ -23,6 +23,9 @@
     <template #end>
       <b-navbar-item v-if="isAuthentificated" tag="div">
         <div class="buttons">
+          <div v-if="$auth.user.producteur === 1" class="button is-primary mr-2" @click="$router.push(`/producteur`)">
+            <strong>Mon panier</strong>
+          </div>
           <div class="button is-primary mr-2" @click="$router.push(`/compte/params`)">
             <strong> Profil Personnel</strong>
           </div>

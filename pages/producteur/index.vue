@@ -25,7 +25,7 @@
     </b-field>
     <div class="mt-3">
       <template v-for="ing in panier">
-        <PanierItems @refresh="majPanier" :key="ing.id" :idprod="ing.id" :nom="ing.nom" class="mt-3"/>
+        <PanierItems :key="ing.id" :idprod="ing.id" :nom="ing.nom" class="mt-3" @refresh="majPanier" />
       </template>
     </div>
   </div>
@@ -38,6 +38,7 @@ import PanierItems from '../../components/PanierItems'
 export default {
   name: 'ProducteurPage',
   components: { PanierItems },
+  middleware: ['auth', 'producteur'],
   data () {
     return {
       panier: [],
@@ -54,6 +55,14 @@ export default {
         )
       })
     }
+  },
+  mounted () {
+    this.$axios.get('/api/ingredients').then((response) => {
+      this.ingredients = response.data
+    })
+    this.$axios.get(`/api/panier/${this.$auth.user.id}`).then((response) => {
+      this.panier = response.data
+    })
   },
   methods: {
     addToCart () {
@@ -83,14 +92,6 @@ export default {
     majPanier (id) {
       this.panier = this.panier.filter(el => el.id !== id)
     }
-  },
-  mounted () {
-    this.$axios.get('/api/ingredients').then((response) => {
-      this.ingredients = response.data
-    })
-    this.$axios.get(`/api/panier/${this.$auth.user.id}`).then((response) => {
-      this.panier = response.data
-    })
   }
 }
 </script>
