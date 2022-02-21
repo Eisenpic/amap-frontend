@@ -283,9 +283,9 @@ export default {
     return {
       error: false,
       loading: true,
-      filterHide: true,
+      filterHide: false,
       recipes: [],
-      filteredRecipes: [],
+      filteredRecipesArray: [],
       search: '',
       selectedOptions: [],
       idUserSuivis: [],
@@ -302,7 +302,7 @@ export default {
   },
   computed: {
     filteredRecipes () {
-      return this.recipes.filter((recipe) => {
+      return this.filteredRecipesArray.filter((recipe) => {
         return recipe?.titre?.toLowerCase().includes(this.search?.toLowerCase())
       })
     },
@@ -376,7 +376,7 @@ export default {
     sortArray () {
       for (let i = 0; i < this.selectedOptions.length; i++) {
         if (this.selectedOptions[i] === 'alpha') {
-          this.filteredRecipes.sort((a, b) => {
+          this.filteredRecipesArray.sort((a, b) => {
             if (a.titre.toLowerCase() < b.titre.toLowerCase()) {
               return -1
             }
@@ -387,7 +387,7 @@ export default {
           })
         }
         if (this.selectedOptions[i] === 'difficulte') {
-          this.filteredRecipes.sort((a, b) => {
+          this.filteredRecipesArray.sort((a, b) => {
             if (a.difficulte < b.difficulte) {
               return -1
             }
@@ -398,7 +398,7 @@ export default {
           })
         }
         if (this.selectedOptions[i] === 'tpsrea') {
-          this.filteredRecipes.sort((a, b) => {
+          this.filteredRecipesArray.sort((a, b) => {
             if (a.temps < b.temps) {
               return -1
             }
@@ -414,7 +414,7 @@ export default {
               response.data.forEach((user) => {
                 this.idUserSuivis.push(user.id)
               })
-              this.filteredRecipes = this.filteredRecipes.filter((recipe) => {
+              this.filteredRecipesArray = this.filteredRecipesArray.filter((recipe) => {
                 return this.idUserSuivis.includes(recipe.id_createur)
               })
             })
@@ -446,7 +446,7 @@ export default {
           return this.productInBasket(recipe)
         })
       }
-      this.filteredRecipes = arrayFilter
+      this.filteredRecipesArray = arrayFilter
       this.loading = false
     },
 

@@ -57,6 +57,7 @@
         />
       </VueSlickCarousel>
     </div>
+
     <div v-if="recettes.recettes" class="m-5 mt-6">
       <p class="title is-5 mb-1">
         Autres recettes
