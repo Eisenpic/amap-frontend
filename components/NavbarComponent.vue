@@ -16,13 +16,16 @@
         Q&A
       </b-navbar-item>
       <b-navbar-item tag="nuxt-link" to="/contributeurs">
-        Producteurs
+        Contributeurs
       </b-navbar-item>
     </template>
 
     <template #end>
       <b-navbar-item v-if="isAuthentificated" tag="div">
         <div class="buttons">
+          <div v-if="$auth.user.producteur === 1" class="button is-primary mr-2" @click="$router.push(`/producteur`)">
+            <strong>Mon panier</strong>
+          </div>
           <div class="button is-primary mr-2" @click="$router.push(`/compte/params`)">
             <strong> Profil Personnel</strong>
           </div>
@@ -34,16 +37,16 @@
 
       <b-navbar-item v-else tag="div">
         <div class="buttons">
-          <Nuxt-Link to="/inscription">
+          <nuxt-link to="/inscription">
             <div class="button is-primary mr-2">
               <strong>Inscription</strong>
             </div>
-          </Nuxt-Link>
-          <Nuxt-Link to="/connexion">
+          </nuxt-link>
+          <nuxt-link to="/connexion">
             <div class="button is-light">
               Connexion
             </div>
-          </Nuxt-Link>
+          </nuxt-link>
         </div>
       </b-navbar-item>
     </template>

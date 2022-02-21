@@ -2,10 +2,10 @@
   <section class="columns is-centered">
     <div id="container" class="column is-8 box pl-5 pr-5 p-5 mt-6">
       <div>
-        <AccountLayout />
+        <account-layout />
       </div>
       <div class="mb-6">
-        <AccountProfil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" :member-expertises="memberExpertises" />
+        <account-profil :nb-avis="nbAvis" :nb-topics="nbTopics" :member="member" :member-expertises="memberExpertises" />
       </div>
       <div class="columns mt-5">
         <div class="column is-3 box p-2 has-background-grey-lighter">
@@ -24,7 +24,7 @@
             </b-menu-list>
           </b-menu>
         </div>
-        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter" >
+        <div v-if="path === 'default' " class="column is-4 is-offset-3 box has-background-grey-lighter">
           <AccountInfos />
         </div>
         <div v-if="path === 'logins'" class="column is-4 is-offset-3 box has-background-grey-lighter">
@@ -33,13 +33,14 @@
         <div v-if="path === 'expertises'" class="column is-5 is-offset-2 box has-background-grey-lighter">
           <AccountExpertise :expertises="expertises" :member-expertises="memberExpertises" :member="member" />
         </div>
-        <br />
+        <br>
       </div>
     </div>
   </section>
 </template>
 
 <script>
+
 export default {
   name: 'ParamsPage',
   middleware: 'auth',

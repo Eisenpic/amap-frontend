@@ -80,6 +80,11 @@ export default {
           this.showedExpertises.push(expertise)
         }
       })
+      this.showedExpertises.sort(function (a, b) {
+        if (a.nom < b.nom) { return -1 }
+        if (a.nom > b.nom) { return 1 }
+        return 0
+      })
     }
   }
 }

@@ -13,7 +13,7 @@
     </div>
     <div v-if="ready" class="columns is-multiline is-justify-content-center mt-2">
       <template v-for="contributeur in filterByTerm">
-        <CardContributeur :key="contributeur.id" :contributeur="contributeur" :followers="followers" />
+        <card-contributeur :key="contributeur.id" :contributeur="contributeur" :followers="followers" />
       </template>
     </div>
   </section>

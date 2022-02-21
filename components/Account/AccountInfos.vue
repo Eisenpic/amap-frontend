@@ -39,6 +39,7 @@
             <span class="is-underlined">Nom</span> : {{ nom }}
           </p>
         </div>
+
         <div v-if="edit.indexOf('tel') !== -1" class="is-flex">
           <b-tooltip label="Annuler" position="is-top">
             <i class="fas fa-undo is-clickable" @click="cancelInfos('tel')" />
@@ -81,8 +82,12 @@
         </p>
       </div>
       <div class="is-flex">
-        <b-tooltip label="Modifier" position="is-top"><i class="fas fa-pen is-clickable" @click="editInfos('tel')" /></b-tooltip>
-        <p class="pb-2"><span class="is-underlined">Téléphone</span> : {{ tel }}</p>
+        <b-tooltip label="Modifier" position="is-top">
+          <i class="fas fa-pen is-clickable" @click="editInfos('tel')" />
+        </b-tooltip>
+        <p class="pb-2">
+          <span class="is-underlined">Téléphone</span> : {{ tel }}
+        </p>
       </div>
       <div v-if="message">
         {{ message }}
