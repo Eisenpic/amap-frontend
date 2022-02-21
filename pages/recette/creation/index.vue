@@ -134,17 +134,17 @@
       <h6 class="subtitle is-6">
         Titre de l'étape ( facultatif )
       </h6>
-      <b-input v-model="descetape[0].titre" placeholder="Titre de votre étape"/>
+      <b-input v-model="descetape[0].titre" placeholder="Titre de votre étape" />
       <h6 class="subtitle is-6">
         Description
       </h6>
       <b-field>
-        <b-input v-model="descetape[0].desc" type="textarea" placeholder="Description de l'étape"/>
+        <b-input v-model="descetape[0].desc" type="textarea" placeholder="Description de l'étape" />
       </b-field>
       <h6 class="subtitle is-6">
         Temps de l'étape :
       </h6>
-      <b-input v-model="descetape[0].temps" placeholder="Temps requis pour l'étape"/>
+      <b-input v-model="descetape[0].temps" placeholder="Temps requis pour l'étape" />
 
       <div v-for="n in parseInt(nbetapes-1)" :key="n" class="mt-3">
         <hr>
