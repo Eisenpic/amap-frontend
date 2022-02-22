@@ -248,7 +248,7 @@
       </div>
     </div>
     <client-only>
-      <div v-if="$auth.loggedIn" class="is-flex">
+      <div v-if="$auth.loggedIn" class="is-flex mb-2">
         <b-button type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
       </div>
     </client-only>
@@ -341,9 +341,6 @@ export default {
       .get('/api/produits')
       .then((response) => {
         this.produits = response.data
-        this.produits.forEach((produit) => {
-          this.produitFilter.push(produit.id)
-        })
       })
       .catch((erreur) => {
         this.$buefy.toast.open({
@@ -478,9 +475,11 @@ export default {
             produitsRecetteArray.push(produit.id_produit)
           })
         })
-      const res = produitsRecetteArray.every((element) => {
-        return this.produitFilter.includes(element)
+
+      const res = this.produitFilter.every((element) => {
+        return produitsRecetteArray.includes(element)
       })
+
       return res
     },
 
