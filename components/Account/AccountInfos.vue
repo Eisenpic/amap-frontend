@@ -46,7 +46,7 @@
           </b-tooltip>
           <p class="pb-2">
             <span class="is-underlined">Téléphone :</span>
-            <b-input v-model="tel" type="number" />
+            <b-input v-model="tel" type="tel" pattern="[0-9]{10}"/>
           </p>
         </div>
         <div v-else class="is-flex">
@@ -89,9 +89,6 @@
           <span class="is-underlined">Téléphone</span> : {{ tel }}
         </p>
       </div>
-      <div v-if="message">
-        {{ message }}
-      </div>
     </div>
   </div>
 </template>
@@ -102,7 +99,6 @@ export default {
     return {
       user: this.$auth.$state.user,
       edit: [],
-      message: '',
       prenom: this.$auth.$state.user.prenom,
       nom: this.$auth.$state.user.nom,
       tel: this.$auth.$state.user.telephone
@@ -122,10 +118,22 @@ export default {
         tel: this.tel
       }).then((response) => {
         this.edit = []
-        this.message = 'Informations mises à jour'
         this.$auth.$storage.setState('user', response.data)
         this.$auth.setUser(response.data)
-        this.$router.go()
+        this.user.prenom = this.prenom
+        this.user.nom = this.nom
+        this.user.tel = this.tel
+        this.$buefy.snackbar.open({
+          message: 'Informations mises à jour!',
+          type: 'is-success',
+          position: 'is-bottom'
+        })
+      }).catch(() => {
+        this.$buefy.snackbar.open({
+          message: 'Les informations entrées ne sont pas valides',
+          type: 'is-danger',
+          position: 'is-bottom'
+        })
       })
     }
   }

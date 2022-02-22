@@ -1,6 +1,6 @@
 <template>
   <section class="columns is-centered">
-    <div id="container" class="column is-8 box pl-5 pr-5 p-5 mt-6">
+    <div class="column is-8 box pl-5 pr-5 p-5 mt-6">
       <div>
         <account-layout />
       </div>
