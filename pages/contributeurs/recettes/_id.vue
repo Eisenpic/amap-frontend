@@ -178,8 +178,6 @@ export default {
       .catch(() => {
         console.log('Erreur lors de la récupération du contributeur')
       })
-
-    // récupération des 10 recettes les plus récentes
   }
 }
 </script>
