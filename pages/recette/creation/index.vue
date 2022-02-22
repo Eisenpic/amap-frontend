@@ -12,7 +12,18 @@
         <b-input v-model="nomrecette" name="nomrecette" expanded />
       </b-field>
       <b-field label="Description de la recette">
-        <b-input v-model="descrecette" name="nomrecette" expanded />
+        <b-input v-model="descrecette" name="descrecette" expanded />
+      </b-field>
+      <b-field class="file is-primary" :class="{'has-name': !!file}">
+        <b-upload v-model="file" class="file-label" accept=".png, .jpg, .jpeg" required validation-message="Please select a file">
+          <span class="file-cta">
+            <b-icon class="file-icon" icon="upload" />
+            <span class="file-label">Click to upload</span>
+          </span>
+          <span v-if="file" class="file-name">
+            {{ file.name }}
+          </span>
+        </b-upload>
       </b-field>
 
       <hr>
@@ -54,8 +65,17 @@
         </b-field>
         <b-field label="Régime">
           <b-select v-model="regime" placeholder="Choisir un régime">
-            <option value="normal">
-              Normal
+            <option value="carnivore">
+              Carnivore
+            </option>
+            <option value="hypocalorique">
+              Hypocalorique
+            </option>
+            <option value="omnivore">
+              Omnivore
+            </option>
+            <option value="sans gluten">
+              Sans gluten
             </option>
             <option value="végétarien">
               Végétarien
@@ -138,12 +158,15 @@
         Liste des ustensiles :
       </h5>
       <div class="columns is-multiline">
-        <b-input v-model="listust[0]" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet" placeholder="Nom ingrédient" />
+        <b-input
+          v-model="listust[0]"
+          class="mt-2 column is-one-quarter is-full-mobile is-full-tablet"
+          placeholder="Nom ingrédient"
+        />
         <div v-for="n in parseInt(nbust-1)" :key="n" class="mt-2 column is-one-quarter is-full-mobile is-full-tablet">
           <b-input v-model="listust[n]" />
         </div>
       </div>
-      {{ listust }}
 
       <!-- Etape front -->
       <hr>
@@ -208,12 +231,13 @@ export default {
       difficulte: 1,
       tempsrea: null,
       saison: 'été',
-      regime: 'normal',
+      regime: 'carnivore',
       typeplat: 'entrée',
       nbpers: 1,
       nbing: 1,
       nbetapes: 1,
       nbust: 1,
+      file: {},
       descetape: [
         {
           desc: '',
@@ -373,16 +397,21 @@ export default {
   },
   methods: {
     sendRecette () {
-      this.$axios.post('/api/auth/recette', {
-        id_createur: this.$auth.user.id,
-        titre: this.nomrecette,
-        description: this.descrecette,
-        saison: this.saison,
-        difficulte: this.difficulte,
-        temps: this.tempsrea,
-        nb_pers: this.nbpers,
-        regime: this.regime,
-        type: this.typeplat
+      const formData = new FormData()
+      formData.append('id_createur', this.$auth.user.id)
+      formData.append('titre', this.nomrecette)
+      formData.append('description', this.descrecette)
+      formData.append('saison', this.saison)
+      formData.append('difficulte', this.difficulte)
+      formData.append('temps', this.tempsrea)
+      formData.append('nb_pers', this.nbpers)
+      formData.append('regime', this.regime)
+      formData.append('type', this.typeplat)
+      formData.append('url_img', this.file)
+      this.$axios.post('/api/auth/recette', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       }).then((response) => {
         const idrecette = response.data.id
         this.$axios.post('/api/auth/etape', {

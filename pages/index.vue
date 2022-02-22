@@ -264,7 +264,7 @@
         :difficulty="recipe.difficulte"
         :recipename="recipe.titre"
         :personnes="recipe.nb_pers"
-        :photo="recipe.url_img"
+        :photo='getImgLink(recipe.url_img)'
         :time="recipe.temps"
         style="cursor:pointer;"
       />
@@ -373,6 +373,9 @@ export default {
     this.filtrer()
   },
   methods: {
+    getImgLink (data) {
+      return 'http://localhost:8000/uploads/img/' + data
+    },
     sortArray () {
       for (let i = 0; i < this.selectedOptions.length; i++) {
         if (this.selectedOptions[i] === 'alpha') {
