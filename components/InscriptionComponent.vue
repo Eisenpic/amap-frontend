@@ -130,11 +130,11 @@ export default {
   name: 'InscriptionComponent',
   data () {
     return {
-      nom: 'aze',
-      numtel: '0717171717',
-      prenom: 'aze',
-      email: 'aze@aze.aze',
-      password: 'aze',
+      nom: '',
+      numtel: '',
+      prenom: '',
+      email: '',
+      password: '',
       allExpertises: [],
       selectedExpertises: [],
       confpassword: '',
