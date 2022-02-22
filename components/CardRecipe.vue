@@ -104,6 +104,9 @@ export default {
         .then(() => {
           this.isLiked = true
         })
+        .then(() => {
+          this.$buefy.toast.open('Vous avez aimé cette recette')
+        })
     },
     dislikeRecipe () {
       this.$axios.delete(`/api/users/${this.$auth.$state.user.id}/dislike/${this.id}`)
