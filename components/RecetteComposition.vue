@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div v-if="etapes" id="fenetreEtape" class="blur">
+    <!-------------------- Affichage des étapes -------------------->
+
+    <b-modal v-if="etapes" id="fenetreEtape" v-model="etapeActive">
       <div id="etapeCard" class="card p-4">
-        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="closeStep()" />
+        <i class="fas fa-times cross fa-lg" style="cursor: pointer;" @click="etapeActive = !etapeActive; play = true; startAndStopTimer()" />
         <h1 class="is-size-4 ml-4 mt-4">
           <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
         </h1>
@@ -10,35 +12,104 @@
           <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
           <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" /> {{ timerFormat }}
         </p>
-        <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape">
-        <p class="ml-4 mt-5 contenu">
-          {{ etapes[indexEtape].contenu }}
-        </p>
-        <footer>
-          <button v-if="indexEtape === 0" class="button is-medium is-primary" style="float:left;">
+        <div class="columns">
+          <p class="ml-4 mt-5 contenu column">
+            {{ etapes[indexEtape].contenu }}
+          </p>
+          <img v-if="etapes[indexEtape].url_img" :src="etapes[indexEtape].url_img" alt="" class="imgEtape column">
+        </div>
+        <footer class="modal-card-foot is-flex is-justify-content-center">
+          <button
+            v-if="indexEtape === 0"
+            class="button is-medium is-primary"
+          >
             Précédent
           </button>
-          <button v-else class="button is-medium is-primary" style="float:left;" @click="indexEtape --; timer = etapes[indexEtape].temps">
+          <button
+            v-else
+            class="button is-medium is-primary"
+            @click="indexEtape --; timer = etapes[indexEtape].temps"
+          >
             Précédent
           </button>
           <button
             v-if="indexEtape === etapes.length -1"
             class="button is-medium is-primary mr-5"
-            style="float:right;"
-            @click="indexEtape = 0; closeStep()"
+            @click="indexEtape = 0; etapeActive = !etapeActive"
           >
             Fin
           </button>
-          <button v-else class="button is-medium is-primary mr-5" style="float:right;" @click="indexEtape ++; timer = etapes[indexEtape].temps">
+          <button
+            v-else
+            class="button is-medium is-primary mr-5"
+            @click="indexEtape ++; timer = etapes[indexEtape].temps"
+          >
             Suivant
           </button>
         </footer>
       </div>
-    </div>
+    </b-modal>
+
+    <!-------------------- Modal -------------------->
+
+    <b-modal v-if="$auth.$state.user" v-model="modalActive">
+      <form action="">
+        <input type="hidden" name="id_recette" :value="id">
+        <input type="hidden" name="id_user" :value="$auth.$state.user.id">
+        <div class="modal-card" style="width: auto">
+          <header class="modal-card-head">
+            <p class="modal-card-title">
+              Question
+            </p>
+            <button
+              type="button"
+              class="delete"
+              @click="modalActive = !modalActive"
+            />
+          </header>
+          <section class="modal-card-body">
+            <b-field label="Email">
+              <b-input
+                type="email"
+                placeholder="Your email"
+                required
+              />
+            </b-field>
+
+            <b-field label="Password">
+              <b-input
+                type="password"
+                password-reveal
+                placeholder="Your password"
+                required
+              />
+            </b-field>
+
+            <b-checkbox>Remember me</b-checkbox>
+          </section>
+          <footer class="modal-card-foot">
+            <b-button
+              label="Close"
+              @click="modalActive = !modalActive"
+            />
+            <b-button
+              label="Login"
+              type="is-primary"
+            />
+          </footer>
+        </div>
+      </form>
+    </b-modal>
+
     <div v-if="!loading">
+      <!-------------------- Affichage des erreurs -------------------->
+
       <div v-if="error">
         <p>{{ messageError }}</p>
       </div>
+
+      <!-------------------- Affichage des détails -------------------->
+
       <div v-else class="recipe card">
         <p class="has-text-centered has-text-weight-semibold is-size-2">
           {{ recipe.titre }} <i class="is-size-4">({{ recipe.regime }})</i>
@@ -118,7 +189,7 @@
         </div>
 
         <div class="avis is-flex is-flex-wrap-wrap is-justify-content-space-between">
-          <b-button type="is-primary" outlined rounded>
+          <b-button type="is-primary" outlined rounded @click="modalActive = !modalActive">
             Une question ?
           </b-button>
           <b-button type="is-primary" outlined rounded>
@@ -150,7 +221,9 @@ export default {
       play: false,
       timer: null,
       t: null,
-      indexEtape: 0
+      indexEtape: 0,
+      etapeActive: false,
+      modalActive: false
     }
   },
   computed: {
@@ -165,6 +238,10 @@ export default {
         default:
           return 'Not filled in'
       }
+    },
+
+    isAuthentificated () {
+      return this.$auth.loggedIn
     },
 
     timerFormat () {
@@ -255,13 +332,7 @@ export default {
 
     displayStep () {
       this.timer = this.etapes[this.indexEtape].temps
-      document.body.scrollTop = 0
-      document.documentElement.scrollTop = 0
-      document.getElementById('fenetreEtape').style = 'display: block;'
-    },
-
-    closeStep () {
-      document.getElementById('fenetreEtape').style = 'display: none;'
+      this.etapeActive = !this.etapeActive
     },
 
     chronometer () {
@@ -294,6 +365,20 @@ export default {
       this.timer = this.etapes[this.indexEtape].temps
       document.getElementById('chrono').style = 'display: block'
       document.getElementById('chronoRestart').style = 'display: none;'
+    },
+
+    openModal () {
+      if (this.isAuthentificated) {
+        this.$buefy.modal.open({
+          parent: this,
+          component: '<p>ok</p>',
+          hasModalCard: true,
+          customClass: 'custom-class custom-class-2',
+          trapFocus: true``
+        })
+      } else {
+        this.$router.push('/connexion')
+      }
     }
   }
 
@@ -345,20 +430,9 @@ export default {
   margin: 0 auto;
 }
 
-.blur {
-  opacity: 1;
-  transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  z-index: 1;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
-}
-
 .imgEtape {
   padding: 2%;
   margin-right: 2%;
-  float: right;
   max-width: 50%;
   max-height: 90%;
 }
@@ -367,52 +441,18 @@ li {
   list-style-type: '- ';
 }
 
-footer {
-  position: absolute;
-  bottom: 0%;
-  padding: 2%;
-  width: 100%;
-}
-
-#fenetreEtape {
-  display: none;
-  position: sticky;
-  top: 0px;
-  width: 100vw;
-}
-
-#etapeCard {
-  width: 80%;
-  min-height: 80%;
-  position: absolute; /* postulat de départ */
-  top: 50%;
-  left: 50%; /* à 50%/50% du parent référent */
-  transform: translate(-50%, -50%);
-}
-
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 
   h1 {
     text-align: center;
   }
 
-  .imgEtape {
-    float: none;
-    display: block;
+  .contenu{
+    text-align: center;
+  }
+
+  .imgEtape{
     margin: 0 auto;
-  }
-
-  #etapeCard {
-    width: 100%;
-    min-height: 100%;
-    height: auto;
-    position: absolute; /* postulat de départ */
-    top: 50%;
-    left: 50%; /* à 50%/50% du parent référent */
-  }
-
-  footer{
-    bottom: 5%;
   }
 
 }
