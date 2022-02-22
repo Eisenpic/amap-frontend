@@ -103,8 +103,6 @@ export default {
       this.$axios.post(`/api/users/${this.$auth.$state.user.id}/like/${this.id}`)
         .then(() => {
           this.isLiked = true
-        })
-        .then(() => {
           this.$buefy.toast.open('Vous avez aimé cette recette')
         })
     },
@@ -112,6 +110,7 @@ export default {
       this.$axios.delete(`/api/users/${this.$auth.$state.user.id}/dislike/${this.id}`)
         .then(() => {
           this.isLiked = false
+          this.$buefy.toast.open("Vous n'aimez plus recette")
         })
     }
   }

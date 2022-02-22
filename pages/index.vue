@@ -34,6 +34,11 @@
                 <span>Utilisateurs suivis</span>
               </b-dropdown-item>
             </client-only>
+            <client-only>
+              <b-dropdown-item v-if="$auth.loggedIn" value="likedrecipes" aria-role="listitem">
+                <span>Recettes aimées</span>
+              </b-dropdown-item>
+            </client-only>
           </b-dropdown>
           <b-input v-model="search" type="text" placeholder="Rechercher..." expanded />
           <b-button
@@ -371,7 +376,9 @@ export default {
   },
   methods: {
     sortArray () {
+      console.log(this.recipes)
       for (let i = 0; i < this.selectedOptions.length; i++) {
+        this.filteredRecipesArray = this.recipes
         if (this.selectedOptions[i] === 'alpha') {
           this.filteredRecipesArray.sort((a, b) => {
             if (a.titre.toLowerCase() < b.titre.toLowerCase()) {
@@ -414,6 +421,13 @@ export default {
               this.filteredRecipesArray = this.filteredRecipesArray.filter((recipe) => {
                 return this.idUserSuivis.includes(recipe.id_createur)
               })
+            })
+        }
+        if (this.selectedOptions[i] === 'likedrecipes') {
+          this.$axios.get(`/api/users/${this.$auth.user.id}/liked`)
+            .then((response) => {
+              this.filteredRecipesArray = response.data
+              console.log(this.filteredRecipesArray)
             })
         }
       }
