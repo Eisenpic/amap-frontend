@@ -269,7 +269,7 @@
         :difficulty="recipe.difficulte"
         :recipename="recipe.titre"
         :personnes="recipe.nb_pers"
-        :photo="recipe.url_img"
+        :photo="getImgLink(recipe.url_img)"
         :time="recipe.temps"
         style="cursor:pointer;"
       />
@@ -331,7 +331,12 @@ export default {
       })
       .catch((erreur) => {
         this.error = true
-        alert('Problème lors de la récupération des recettes: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
       .finally(() => {
         this.loading = false
@@ -343,7 +348,12 @@ export default {
         this.produits = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des produits: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     this.$axios
@@ -352,7 +362,12 @@ export default {
         this.paniers = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des paniers: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     const today = Date.parse(new Date())
@@ -375,6 +390,9 @@ export default {
     this.filtrer()
   },
   methods: {
+    getImgLink (data) {
+      return 'http://localhost:8000/uploads/img/' + data
+    },
     sortArray () {
       console.log(this.recipes)
       for (let i = 0; i < this.selectedOptions.length; i++) {

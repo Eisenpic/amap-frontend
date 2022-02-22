@@ -48,9 +48,6 @@
         </b-button>
       </div>
     </div>
-    <div v-if="message" class="has-text-centered mt-3">
-      {{ message }}
-    </div>
   </div>
 </template>
 
@@ -60,7 +57,6 @@ export default {
   props: ['expertises', 'memberExpertises', 'member'],
   data () {
     return {
-      message: '',
       showedExpertises: [],
       selectExpertise: false,
       selectedExpertise: '',
@@ -72,8 +68,12 @@ export default {
   },
   methods: {
     deleteExpertise (expertise) {
-      /* Delete method doesn't work in api */this.$axios.delete(`/api/users/${this.member.id}/expertises/${expertise.id}`).then(() => {
-        this.message = 'Expertise supprimée'
+      this.$axios.delete(`/api/users/${this.member.id}/expertises/${expertise.id}`).then(() => {
+        this.$buefy.snackbar.open({
+          message: 'Expertise supprimée!',
+          type: 'is-success',
+          position: 'is-bottom'
+        })
       })
       this.memberExpertisesNew = this.memberExpertisesNew.filter(el => el.id !== expertise.id)
       this.showedExpertises.push(expertise)
@@ -83,10 +83,18 @@ export default {
     },
     attachExpertise () {
       if (this.selectedExpertise === '') {
-        this.message = 'Veuillez séléctionner une expertise'
+        this.$buefy.snackbar.open({
+          message: 'Veuillez séléctionner une expertise!',
+          type: 'is-danger',
+          position: 'is-bottom'
+        })
       } else {
         this.$axios.post(`/api/users/${this.member.id}/expertises/${this.selectedExpertise.id}`).then(() => {
-          this.message = 'Expertise ajoutée'
+          this.$buefy.snackbar.open({
+            message: 'Expertise ajoutée!',
+            type: 'is-success',
+            position: 'is-bottom'
+          })
         })
         this.memberExpertisesNew.push(this.selectedExpertise)
         this.selectExpertise = false
