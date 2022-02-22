@@ -8,7 +8,7 @@
         {{ recipe.titre }}
       </p>
       <div class="recipe-image  ">
-        <b-image :src="recipe.url_img" alt="Placeholder image" />
+        <b-image :src="urlImg()" alt="Placeholder image" />
       </div>
       <div class="recipe-info is-flex is-flex-wrap-wrap is-justify-content-space-between">
         <div class="timerecipe">
@@ -227,6 +227,11 @@ export default {
       }
 
       return heures + minutes + secondes
+    },
+
+    urlImg () {
+      const url = `http://localhost:8000/uploads/img/${this.recipe.url_img}`
+      return url.toString()
     },
 
     selectChange (type) {

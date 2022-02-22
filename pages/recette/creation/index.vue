@@ -8,10 +8,10 @@
         Sur cette pages vous pourrez créer votre recette afin de la publié étape par
         étape.
       </h5>
-      <b-field label="Nom de la recette">
+      <b-field label="Nom de la recette *">
         <b-input v-model="nomrecette" name="nomrecette" expanded />
       </b-field>
-      <b-field label="Description de la recette">
+      <b-field label="Description de la recette *">
         <b-input v-model="descrecette" name="descrecette" expanded />
       </b-field>
       <b-field class="file is-primary" :class="{'has-name': !!file}">
@@ -28,8 +28,8 @@
 
       <hr>
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
-        <b-field label="Temps de la recette en minutes">
-          <b-input v-model="tempsrea" name="nomrecette" />
+        <b-field label="Temps de la recette en minutes *">
+          <b-numberinput v-model="tempsrea" placeholder="60" :min="0"></b-numberinput>
         </b-field>
         <b-field label="Saison">
           <b-select v-model="saison" placeholder="Choisir une saison">
@@ -173,14 +173,14 @@
       <b-field label="Nombres d'étapes de la recette">
         <b-numberinput v-model="nbetapes" placeholder="5" min="1" max="15" />
       </b-field>
-      <h5 class="title is-5">
-        Etape : 1
+      <h5 class="title is-5 mt-3">
+        Etape : 1 *
       </h5>
       <h6 class="subtitle is-6">
         Titre de l'étape ( facultatif )
       </h6>
       <b-input v-model="descetape[0].titre" placeholder="Titre de votre étape" />
-      <h6 class="subtitle is-6">
+      <h6 class="subtitle is-6 mt-3">
         Description
       </h6>
       <b-field>
@@ -200,7 +200,7 @@
           Titre de l'étape ( facultatif )
         </h6>
         <b-input v-model="descetape[n].titre" />
-        <h6 class="subtitle is-6">
+        <h6 class="subtitle is-6 mt-3">
           Description
         </h6>
         <b-field>
@@ -397,38 +397,46 @@ export default {
   },
   methods: {
     sendRecette () {
-      const formData = new FormData()
-      formData.append('id_createur', this.$auth.user.id)
-      formData.append('titre', this.nomrecette)
-      formData.append('description', this.descrecette)
-      formData.append('saison', this.saison)
-      formData.append('difficulte', this.difficulte)
-      formData.append('temps', this.tempsrea)
-      formData.append('nb_pers', this.nbpers)
-      formData.append('regime', this.regime)
-      formData.append('type', this.typeplat)
-      formData.append('url_img', this.file)
-      this.$axios.post('/api/auth/recette', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then((response) => {
-        const idrecette = response.data.id
-        this.$axios.post('/api/auth/etape', {
-          id_recette: idrecette,
-          etapes: this.descetape
+      if ((this.descetape[0].desc !== null && this.descetape[0].desc !== '') && (this.descrecette !== null && this.descrecette !== '') && (this.nomrecette !== '' && this.descrecette !== null) && (this.tempsrea !== 0 && this.tempsrea !== '' && this.tempsrea !== null)) {
+        const formData = new FormData()
+        formData.append('id_createur', this.$auth.user.id)
+        formData.append('titre', this.nomrecette)
+        formData.append('description', this.descrecette)
+        formData.append('saison', this.saison)
+        formData.append('difficulte', this.difficulte)
+        formData.append('temps', this.tempsrea)
+        formData.append('nb_pers', this.nbpers)
+        formData.append('regime', this.regime)
+        formData.append('type', this.typeplat)
+        formData.append('url_img', this.file)
+        this.$axios.post('/api/auth/recette', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((response) => {
+          const idrecette = response.data.id
+          this.$axios.post('/api/auth/etape', {
+            id_recette: idrecette,
+            etapes: this.descetape
+          })
+          this.$axios.post('/api/auth/produitrecette', {
+            id_recette: idrecette,
+            produits: this.listing
+          })
+          this.$axios.post('/api/auth/ustensilerecette', {
+            id_recette: idrecette,
+            ustenciles: this.listust
+          })
+        }).finally(() => {
+          this.$router.push('/')
         })
-        this.$axios.post('/api/auth/produitrecette', {
-          id_recette: idrecette,
-          produits: this.listing
+      } else {
+        this.$buefy.toast.open({
+          message: "Avant d'envoyer votre recette vous devez remplir au minimum les informations importantes.",
+          type: 'is-primary',
+          duration: 3000
         })
-        this.$axios.post('/api/auth/ustensilerecette', {
-          id_recette: idrecette,
-          ustenciles: this.listust
-        })
-      }).finally(() => {
-        this.$router.push('/')
-      })
+      }
     }
   }
 }
