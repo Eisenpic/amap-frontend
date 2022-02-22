@@ -425,14 +425,11 @@ export default {
           })
           this.$axios.post('/api/auth/ustensilerecette', {
             id_recette: idrecette,
-            ustenciles: this.listust
+            ustensiles: this.listust
           })
         }).finally(() => {
           this.$router.push('/')
         })
-        this.$axios.post('/api/auth/ustensilerecette', {
-          id_recette: idrecette,
-          ustensiles: this.listust
       } else {
         this.$buefy.toast.open({
           message: "Avant d'envoyer votre recette vous devez remplir au minimum les informations importantes.",
