@@ -52,10 +52,8 @@
 
     <!-------------------- Modal -------------------->
 
-    <b-modal v-if="$auth.$state.user" v-model="modalActive">
-      <form action="">
-        <input type="hidden" name="id_recette" :value="id">
-        <input type="hidden" name="id_user" :value="$auth.$state.user.id">
+    <b-modal v-if="isAuthentificated" v-model="modalActive">
+      <form action="/api/question" method="post">
         <div class="modal-card" style="width: auto">
           <header class="modal-card-head">
             <p class="modal-card-title">
@@ -68,33 +66,29 @@
             />
           </header>
           <section class="modal-card-body">
-            <b-field label="Email">
-              <b-input
-                type="email"
-                placeholder="Your email"
-                required
-              />
+            <b-field v-if="expertises" label="Expertises" scrollable :max-height="200">
+              <b-select name="expertise" v-model="expertiseModal" placeholder="Sélectionner une expertise">
+                <option v-for="(expertise, index) in expertises" :key="index" :value="expertise.id">
+                  {{ expertise.nom }}
+                </option>
+              </b-select>
             </b-field>
-
-            <b-field label="Password">
-              <b-input
-                type="password"
-                password-reveal
-                placeholder="Your password"
-                required
-              />
+            <b-field
+              label="Question"
+              label-position="on-border"
+            >
+              <b-input name="message" v-model="messageModal" maxlength="1000" type="textarea" />
             </b-field>
-
-            <b-checkbox>Remember me</b-checkbox>
           </section>
           <footer class="modal-card-foot">
             <b-button
-              label="Close"
+              label="Fermer"
               @click="modalActive = !modalActive"
             />
             <b-button
-              label="Login"
+              label="Envoyer"
               type="is-primary"
+              @click="submitQuestion()"
             />
           </footer>
         </div>
@@ -189,7 +183,7 @@
         </div>
 
         <div class="avis is-flex is-flex-wrap-wrap is-justify-content-space-between">
-          <b-button type="is-primary" outlined rounded @click="modalActive = !modalActive">
+          <b-button type="is-primary" outlined rounded @click="openModal()">
             Une question ?
           </b-button>
           <b-button type="is-primary" outlined rounded>
@@ -223,7 +217,10 @@ export default {
       t: null,
       indexEtape: 0,
       etapeActive: false,
-      modalActive: false
+      modalActive: false,
+      expertises: null,
+      expertiseModal: null,
+      messageModal: null
     }
   },
   computed: {
@@ -256,9 +253,9 @@ export default {
         this.recipe = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération de la recette'
+        this.messageError = 'Erreur lors de la récupération de la recette.\n Erreur: ' + error
       })
       .finally(() => {
         this.loading = false
@@ -269,9 +266,9 @@ export default {
         this.produits = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette'
+        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/ustensiles/' + this.id)
@@ -279,9 +276,9 @@ export default {
         this.ustensiles = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette'
+        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/etapes/' + this.id)
@@ -289,9 +286,18 @@ export default {
         this.etapes = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des étapes de la recette'
+        this.messageError = 'Erreur lors de la récupération des étapes de la recette.\n Erreur: ' + error
+      })
+    axios
+      .get('/api/expertises')
+      .then((response) => {
+        this.expertises = response.data
+      })
+      .catch((error) => {
+        this.error = true
+        this.messageError = 'Erreur lors de la récupération des expertises.\n Erreur: ' + error
       })
   },
   methods: {
@@ -369,15 +375,40 @@ export default {
 
     openModal () {
       if (this.isAuthentificated) {
-        this.$buefy.modal.open({
-          parent: this,
-          component: '<p>ok</p>',
-          hasModalCard: true,
-          customClass: 'custom-class custom-class-2',
-          trapFocus: true``
-        })
+        console.log(this.isAuthentificated)
+        this.modalActive = true
       } else {
         this.$router.push('/connexion')
+      }
+    },
+
+    submitQuestion () {
+      if (this.messageModal && this.expertiseModal && this.$auth.$state.user.id) {
+        axios
+          .post('/api/question', { id_recette: this.id, id_user: this.$auth.$state.user.id, expertise: this.expertiseModal, message: this.messageModal })
+          .then((response) => {
+            this.modalActive = false
+            this.$buefy.notification.open({
+              message: 'Votre question a bien été envoyé',
+              position: 'is-top',
+              type: 'is-success'
+            })
+          })
+          .catch((error) => {
+            this.$buefy.notification.open({
+              message: 'Erreur d\'envoi.\n Error: ' + error,
+              position: 'is-top',
+              type: 'is-danger',
+              hasIcon: true
+            })
+          })
+      } else {
+        this.$buefy.notification.open({
+          message: 'Certains champs sont vides',
+          position: 'is-top',
+          type: 'is-danger',
+          hasIcon: true
+        })
       }
     }
   }
