@@ -290,19 +290,24 @@
     <div v-if="error">
       <p>Erreur lors de la récupération des recettes</p>
     </div>
-    <div v-else class="columns is-multiline is-justify-content-center">
-      <b-loading v-model="loading" :is-full-page="false" />
-      <card-recipe
-        v-for="recipe in filteredRecipes"
-        :id="recipe.id"
-        :key="recipe.id"
-        :difficulty="recipe.difficulte"
-        :recipename="recipe.titre"
-        :personnes="recipe.nb_pers"
-        :photo="recipe.url_img"
-        :time="recipe.temps"
-        style="cursor:pointer;"
-      />
+    <div v-else>
+      <div v-if="filteredRecipes.length > 0" class="columns is-multiline is-justify-content-center">
+        <b-loading v-model="loading" :is-full-page="false" />
+        <card-recipe
+          v-for="recipe in filteredRecipes"
+          :id="recipe.id"
+          :key="recipe.id"
+          :difficulty="recipe.difficulte"
+          :recipename="recipe.titre"
+          :personnes="recipe.nb_pers"
+          :photo="recipe.url_img"
+          :time="recipe.temps"
+          style="cursor:pointer;"
+        />
+      </div>
+      <div v-else class="columns is-justify-content-center mt-5">
+        <h1> Nous n’avons pas trouvé de résultats pour votre recherche </h1>
+      </div>
     </div>
   </section>
 </template>
