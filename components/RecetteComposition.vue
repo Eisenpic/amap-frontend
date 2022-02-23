@@ -67,7 +67,7 @@
           </header>
           <section class="modal-card-body">
             <b-field v-if="expertises" label="Expertises" scrollable :max-height="200">
-              <b-select name="expertise" v-model="expertiseModal" placeholder="Sélectionner une expertise">
+              <b-select v-model="expertiseModal" name="expertise" placeholder="Sélectionner une expertise">
                 <option v-for="(expertise, index) in expertises" :key="index" :value="expertise.id">
                   {{ expertise.nom }}
                 </option>
@@ -77,7 +77,7 @@
               label="Question"
               label-position="on-border"
             >
-              <b-input name="message" v-model="messageModal" maxlength="1000" type="textarea" />
+              <b-input v-model="messageModal" name="message" maxlength="1000" type="textarea" />
             </b-field>
           </section>
           <footer class="modal-card-foot">
@@ -144,7 +144,12 @@
         <div class="lorem is-bordered mt-1">
           <ul v-if="type === 'ingredient'" class="p-5">
             <li v-for="produit in produits" :key="produit.id_produit">
-              {{ produit.nombre }} {{ produit.unite }} {{ produit.nom }}
+              <p v-if="produit.unite.length <= 2">
+                {{ produit.nombre }}{{ produit.unite }} {{ produit.nom }}
+              </p>
+              <p v-else>
+                {{ produit.nombre }} {{ produit.unite }} {{ produit.nom }}
+              </p>
             </li>
           </ul>
           <ul v-else class="p-5">
