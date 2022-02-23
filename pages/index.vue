@@ -394,9 +394,10 @@ export default {
       return 'http://localhost:8000/uploads/img/' + data
     },
     sortArray () {
-      console.log(this.recipes)
-      for (let i = 0; i < this.selectedOptions.length; i++) {
+      if (this.selectedOptions.length === 0) {
         this.filteredRecipesArray = this.recipes
+      }
+      for (let i = 0; i < this.selectedOptions.length; i++) {
         if (this.selectedOptions[i] === 'alpha') {
           this.filteredRecipesArray.sort((a, b) => {
             if (a.titre.toLowerCase() < b.titre.toLowerCase()) {
@@ -445,7 +446,6 @@ export default {
           this.$axios.get(`/api/users/${this.$auth.user.id}/liked`)
             .then((response) => {
               this.filteredRecipesArray = response.data
-              console.log(this.filteredRecipesArray)
             })
         }
       }
