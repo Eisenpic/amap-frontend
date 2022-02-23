@@ -34,6 +34,11 @@
                 <span>Utilisateurs suivis</span>
               </b-dropdown-item>
             </client-only>
+            <client-only>
+              <b-dropdown-item v-if="$auth.loggedIn" value="likedrecipes" aria-role="listitem">
+                <span>Recettes aimées</span>
+              </b-dropdown-item>
+            </client-only>
           </b-dropdown>
           <b-input v-model="search" type="text" placeholder="Rechercher..." expanded />
           <b-button
@@ -326,7 +331,12 @@ export default {
       })
       .catch((erreur) => {
         this.error = true
-        alert('Problème lors de la récupération des recettes: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
       .finally(() => {
         this.loading = false
@@ -338,7 +348,12 @@ export default {
         this.produits = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des produits: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     this.$axios
@@ -347,7 +362,12 @@ export default {
         this.paniers = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des paniers: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     const today = Date.parse(new Date())
@@ -371,6 +391,9 @@ export default {
   },
   methods: {
     sortArray () {
+      if (this.selectedOptions.length === 0) {
+        this.filteredRecipesArray = this.recipes
+      }
       for (let i = 0; i < this.selectedOptions.length; i++) {
         if (this.selectedOptions[i] === 'alpha') {
           this.filteredRecipesArray.sort((a, b) => {
@@ -414,6 +437,12 @@ export default {
               this.filteredRecipesArray = this.filteredRecipesArray.filter((recipe) => {
                 return this.idUserSuivis.includes(recipe.id_createur)
               })
+            })
+        }
+        if (this.selectedOptions[i] === 'likedrecipes') {
+          this.$axios.get(`/api/users/${this.$auth.user.id}/liked`)
+            .then((response) => {
+              this.filteredRecipesArray = response.data
             })
         }
       }
