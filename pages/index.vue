@@ -283,8 +283,8 @@
       </div>
     </div>
     <client-only>
-      <div v-if="$auth.loggedIn" class="is-flex mb-2">
-        <b-button type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
+      <div v-if="$auth.loggedIn" class="is-flex columns is-centered my-3">
+        <b-button class="column is-half is-2 p-2" type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
       </div>
     </client-only>
     <div v-if="error">
