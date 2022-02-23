@@ -51,7 +51,8 @@ export default {
     'nuxt-buefy',
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    'nuxt-leaflet'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
