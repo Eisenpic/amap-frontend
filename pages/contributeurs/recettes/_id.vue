@@ -7,7 +7,7 @@
       <p class="title is-5 mb-1">
         Top recette
       </p>
-      <nuxt-link :to="{name: 'recette-id', params: {id: recettes.topRecette.id}}" class="box columns m-0 p-0" style="min-height: 160px">
+      <nuxt-link :to="{name: 'recette-id', params: {id: recettes.topRecette.id}}" class="box columns m-0 p-0" style="min-height: 160px; max-height: 350px;">
         <figure class="column is-4 image p-0">
           <img :src="recettes.topRecette.url_img" style="width: 100%; height: 100%; object-fit: cover">
         </figure>
