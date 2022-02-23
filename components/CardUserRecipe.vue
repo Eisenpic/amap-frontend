@@ -37,47 +37,10 @@
 export default {
   name: 'CardRecipe',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['recipename', 'difficulty', 'personnes', 'photo', 'time', 'id'],
+  props: ['recipename', 'photo', 'id'],
   data () {
     return {
       aime: []
-    }
-  },
-  computed: {
-    level () {
-      switch (this.difficulty) {
-        case 1:
-          return 'Facile'
-        case 2:
-          return 'Normal'
-        case 3:
-          return 'Difficile'
-        default:
-          return 'Not filled in'
-      }
-    },
-
-    timeConv () {
-      let time = this.time
-      let heures = ''
-      let minutes = ''
-      let secondes = ''
-
-      if ((time / 3600) >= 1) {
-        heures = Math.trunc(time / 3600) + 'h '
-        time -= 3600 * Math.trunc(time / 3600)
-      }
-
-      if ((time / 60) >= 1) {
-        minutes = Math.trunc(time / 60) + 'min '
-        time -= 60 * Math.trunc(time / 60)
-      }
-
-      if (time > 0) {
-        secondes = time + 'sec'
-      }
-
-      return heures + minutes + secondes
     }
   },
   mounted () {
