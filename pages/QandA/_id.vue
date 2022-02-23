@@ -20,10 +20,14 @@
             :date="rep.date"
         />
         </template>
-        <textarea v-model="message" class="textarea" placeholder="Ecrivez votre messages ici" rows="5" />
-        <button class="button is-primary mt-2" @click="sendMessage">
-        Envoyer
-        </button>
+        <transition name="fade">
+          <div v-if="!haveMessage && $store.state.auth.user && expert">
+            <textarea v-model="message" class="textarea" placeholder="Ecrivez votre messages ici" rows="5" />
+            <button class="button is-primary mt-2" @click="sendMessage">
+            Envoyer
+            </button>
+          </div>
+        </transition>
     </div>
 </template>
 
@@ -39,7 +43,9 @@ export default {
       errorMessage: '',
       question: {},
       responses: {},
-      message: ''
+      message: '',
+      haveMessage: false,
+      expert: false
     }
   },
   created () {
@@ -57,11 +63,34 @@ export default {
     this.$axios.get(`/api/question/${this.$route.params.id}/reponses`)
       .then((response) => {
         this.responses = response.data
+        if (this.$store.state.auth.user) {
+          this.responses.forEach((response) => {
+            if (response.id_user === this.$store.state.auth.user.id) {
+              this.haveMessage = true
+            }
+          })
+        }
       })
       .catch((error) => {
         this.error = true
         this.errorMessage = 'Erreur lors de la récupération des réponses.\n Erreur: ' + error
       })
+
+    if (this.$store.state.auth.user) {
+      this.$axios.get(`/api/users/${this.$store.state.auth.user.id}/expertises`)
+        .then((response) => {
+          const expertises = response.data
+          expertises.forEach((expertise) => {
+            if (expertise.id === this.question.id_expertise) {
+              this.expert = true
+            }
+          })
+        })
+        .catch((error) => {
+          this.error = true
+          this.errorMessage = 'Erreur lors de la récupération des réponses.\n Erreur: ' + error
+        })
+    }
   },
   methods: {
     sendMessage () {
@@ -71,7 +100,7 @@ export default {
         reponse: this.message
       }).then((response) => {
         this.responses.push(response.data)
-        console.log(response.data)
+        this.haveMessage = true
         this.message = ''
       })
         .catch((error) => {
@@ -86,3 +115,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+</style>

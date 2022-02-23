@@ -51,6 +51,7 @@ export default {
             message: 'Le message a été supprimé!',
             type: 'is-success'
           })
+          this.$parent.haveMessage = false
         })
         .catch((error) => {
           this.$buefy.toast.open({
@@ -62,24 +63,33 @@ export default {
         })
     },
     sendEdit () {
-      this.$axios.put(`/api/question/${this.$route.params.id}/${this.id_user}`, { message: this.messageEdit })
-        .then((response) => {
-          this.messageNoEdit = this.messageEdit
-          this.messageEdit = ''
-          this.edit = false
-          this.$buefy.toast.open({
-            message: 'Le message a été modifié!',
-            type: 'is-success'
+      if (this.messageEdit) {
+        this.$axios.put(`/api/question/${this.$route.params.id}/edit/${this.id_user}`, { reponse: this.messageEdit })
+          .then((response) => {
+            this.messageNoEdit = this.messageEdit
+            this.messageEdit = ''
+            this.edit = false
+            this.$buefy.toast.open({
+              message: 'Le message a été modifié!',
+              type: 'is-success'
+            })
           })
-        })
-        .catch((error) => {
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: 'Le message n\'a pas été modifié!\n Erreur: ' + error,
-            position: 'is-bottom',
-            type: 'is-danger'
+          .catch((error) => {
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: 'Le message n\'a pas été modifié!\n Erreur: ' + error.message,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
           })
+      } else {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: 'Le message est vide',
+          position: 'is-bottom',
+          type: 'is-danger'
         })
+      }
     }
   },
   computed: {
@@ -92,7 +102,7 @@ export default {
 
 <style scoped>
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity .05s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
