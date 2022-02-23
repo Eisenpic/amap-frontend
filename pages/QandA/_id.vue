@@ -65,18 +65,19 @@ export default {
   },
   methods: {
     sendMessage () {
-      this.$axios.post(`/api/question/${this.topic.id}/reponse`, {
+      this.$axios.post(`/api/question/${this.question.id}/reponse`, {
         id_question: this.question.id,
-        id_user: this.$store.state.user.id,
+        id_user: this.$store.state.auth.user.id,
         reponse: this.message
       }).then((response) => {
         this.responses.push(response.data)
+        console.log(response.data)
         this.message = ''
       })
         .catch((error) => {
           this.$buefy.toast.open({
             duration: 5000,
-            message: 'Le message n\'a pas été envoyé!\n Erreur: ' + error,
+            message: 'Le message n\'a pas été envoyé!\n Erreur: ' + error.message,
             position: 'is-bottom',
             type: 'is-danger'
           })
