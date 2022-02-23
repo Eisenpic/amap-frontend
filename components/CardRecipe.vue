@@ -10,7 +10,7 @@
           <p>{{ timeConv }}</p>
         </div>
         <figure class="image is-4by3">
-          <img :src="photo" alt="Placeholder image">
+          <img :src="getImgLink(photo)" alt="Placeholder image">
         </figure>
       </div>
       <div class="card-content">
@@ -99,6 +99,9 @@ export default {
     }
   },
   methods: {
+    getImgLink (data) {
+      return 'http://localhost:8000/uploads/img/' + data
+    },
     likeRecipe () {
       this.$axios.post(`/api/users/${this.$auth.$state.user.id}/like/${this.id}`)
         .then(() => {
