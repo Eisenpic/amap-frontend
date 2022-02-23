@@ -397,7 +397,7 @@ export default {
   },
   methods: {
     sendRecette () {
-      if ((this.descetape[0].desc !== null && this.descetape[0].desc !== '') && (this.descrecette !== null && this.descrecette !== '') && (this.nomrecette !== '' && this.descrecette !== null) && (this.tempsrea !== 0 && this.tempsrea !== '' && this.tempsrea !== null)) {
+      if ((this.descetape[0].desc !== null && this.descetape[0].desc !== '') && (this.descrecette !== null && this.descrecette !== '') && (this.nomrecette !== '' && this.descrecette !== null) && (this.tempsrea !== 0 && this.tempsrea !== '' && this.tempsrea !== null) && (this.listust[0] !== null && this.listust[0] !== '') && (this.listing[0].nom !== '' && this.listing[0].nom !== null)) {
         const formData = new FormData()
         formData.append('id_createur', this.$auth.user.id)
         formData.append('titre', this.nomrecette)
