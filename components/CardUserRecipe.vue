@@ -1,7 +1,8 @@
 <template>
   <div class="une_recette column is-4" style="position: relative">
     <div class="headercard is-flex p-3">
-      <p>22<i class="fas fa-heart mx-2" id="span_heart"/></p>
+      <p v-if="aime.length !== 0">{{ aime.length }}<i class="fas fa-heart mx-2 span_heart"/></p>
+      <p v-else>0<i class="fas fa-heart mx-2 span_heart"/></p>
     </div>
     <div class="card" >
       <div class="card-image" @click="$router.push('/recette/' + id)">
@@ -13,7 +14,7 @@
         <div class="columns is-mobile">
           <div class="column is-3 content has-text-centered">
             <b-tooltip label="Supprimer" position="is-bottom">
-              <b-button @click="deleteRecipe(id)" id="b-delete"><b-icon icon="delete"></b-icon></b-button>
+              <b-button @click="callParent" id="b-delete"><b-icon icon="delete"></b-icon></b-button>
             </b-tooltip>
           </div>
           <div class="column is-6 content">
@@ -37,7 +38,11 @@ export default {
   name: 'CardRecipe',
   // eslint-disable-next-line vue/require-prop-types
   props: ['recipename', 'difficulty', 'personnes', 'photo', 'time', 'id'],
-
+  data () {
+    return {
+      aime: []
+    }
+  },
   computed: {
     level () {
       switch (this.difficulty) {
@@ -75,21 +80,20 @@ export default {
       return heures + minutes + secondes
     }
   },
+  mounted () {
+    this.chargerAime()
+  },
   methods: {
-    deleteRecipe (idRecipe) {
-      this.$buefy.dialog.confirm({
-        message: "La <b>suppression</b> de la recette n'est pas réversible. Êtes vous sûre de vouloir continuer?",
-        type: 'is-danger',
-        hasIcon: true,
-        onConfirm: () => {
-          this.$buefy.toast.open('Suppression confirmée')
-          console.log(idRecipe)
-          this.$axios.delete(`/api/recettes/${idRecipe}`)
-        }
+    chargerAime () {
+      this.$axios.get(`/api/recettes/${this.id}/aime`).then((response) => {
+        this.aime = response.data
       })
     },
     updateRecipe (idRecipe) {
       console.log('En attente de la fonctionnalité modifRecette' + idRecipe)
+    },
+    callParent () {
+      this.$emit('refresh', this.id)
     }
   }
 }
@@ -116,20 +120,16 @@ div.column p {
   text-overflow: ellipsis;
 }
 
-#span_heart{
+.span_heart{
   transform: scale(1.3);
   color: white;
   z-index: 2;
+  color: red;
 }
 
 #span_heart i {
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   text-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px;
-}
-
-#span_heart:hover {
-  transform: scale(1.5);
-  color: red;
 }
 
 #b-delete {

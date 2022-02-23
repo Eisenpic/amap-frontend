@@ -11,40 +11,6 @@
         <div class="has-text-centered title is-4">
           Mes recettes
         </div>
-        <div v-if="recettes.topRecette" class="m-5">
-          <p class="title is-5 mb-1">
-            Top recette
-          </p>
-          <nuxt-link :to="{name: 'recette-id', params: {id: recettes.topRecette.id}}" class="box columns m-0 p-0" style="min-height: 160px">
-            <figure class="column is-4 image p-0">
-              <img :src="recettes.topRecette.url_img" style="width: 100%; height: 100%; object-fit: cover">
-            </figure>
-            <div class="column is-flex is-flex-direction-column is-justify-content-space-between py-1">
-              <div>
-                <div class="title is-5 is-underlined m-0">
-                  {{ recettes.topRecette.titre }}
-                </div>
-                <div class="mt-2 mb-5">
-                  {{ recettes.topRecette.description }}
-                </div>
-              </div>
-              <div class="is-flex is-justify-content-space-between has-text-weight-semibold">
-                <div>
-                  {{ level }}
-                </div>
-                <div>
-                  {{ timeConv }}
-                </div>
-                <div>
-                  {{ recettes.topRecette.nb_pers }}
-                  <span class="icon">
-                    <i class="fas fa-utensil-spoon" />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </nuxt-link>
-        </div>
 
         <div v-if="recettes.sixDernieres" class="m-5 mt-6">
           <p class="title is-5 mb-1">
@@ -54,6 +20,7 @@
           <VueSlickCarousel v-bind="carouselSettings">
             <CardUserRecipe
               v-for="recette in recettes.sixDernieres"
+              @refresh="deleteRecipe"
               :id="recette.id"
               :key="recette.id"
               :difficulty="recette.difficulte"
@@ -73,6 +40,7 @@
           <div class="columns is-multiline is-justify-content-center">
             <CardUserRecipe
               v-for="recette in recettes.recettes"
+              @refresh="deleteRecipe"
               :id="recette.id"
               :key="recette.id"
               :difficulty="recette.difficulte"
@@ -82,6 +50,7 @@
               :time="recette.temps"
               style="cursor:pointer;"
             />
+            <div><p>testa</p></div>
           </div>
         </div>
       </div>
@@ -173,12 +142,25 @@ export default {
         if (response.data !== []) {
           this.recettes = response.data
           this.ready = true
-          console.log(this.recettes)
         }
       })
       .catch(() => {
         console.log('Erreur lors de la récupération des recettes')
       })
+  },
+  methods: {
+    deleteRecipe (id) {
+      this.$buefy.dialog.confirm({
+        message: "La <b>suppression</b> de la recette n'est pas réversible. Êtes vous sûre de vouloir continuer?",
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => {
+          this.$buefy.toast.open('Suppression confirmée')
+          this.$axios.delete(`/api/recettes/${id}`)
+          this.$router.go()
+        }
+      })
+    }
   }
 }
 </script>

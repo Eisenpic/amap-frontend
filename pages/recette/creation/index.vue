@@ -107,7 +107,7 @@
         <b-input v-model="listing[n].unite" class="mt-2 column is-one-third" placeholder="Unité volumétrique" />
       </div>
 
-      <!--Ustencile front-->
+      <!--Ustensile front-->
       <hr>
       <b-field label="Nombres d'ustensiles">
         <b-numberinput v-model="nbust" placeholder="5" min="1" max="5" />
@@ -371,7 +371,7 @@ export default {
         })
         this.$axios.post('/api/auth/ustensilerecette', {
           id_recette: idrecette,
-          ustenciles: this.listust
+          ustensiles: this.listust
         })
       }).finally(() => {
         this.$router.push('/')
