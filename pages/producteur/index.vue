@@ -1,10 +1,10 @@
 <template>
   <div>
     <h3 class="title is-3">
-      Bienvenue sur la page d'éditions de panier.
+      Bienvenue sur la page d'édition de panier.
     </h3>
     <h3 class="subtitle is-3">
-      Ici vous pourrez éditer votre panier de la semaine afin que les amapiens puissent consulté les recettes lié !
+      Ici vous pourrez éditer votre panier de la semaine afin que les amapiens puissent consulter les recettes liées !
     </h3>
     <hr>
     <b-field label="Trouver par nom : ">

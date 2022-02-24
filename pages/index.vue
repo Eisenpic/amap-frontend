@@ -3,35 +3,70 @@
     <div class="container my-3">
       <b-field grouped>
         <b-field label="Rechercher" expanded>
-          <b-dropdown
-            v-model="selectedOptions"
-            multiple
-            aria-role="list"
-            @input="sortArray"
-          >
-            <template #trigger>
+          <b-dropdown v-model="selectedOptions" aria-role="list" @input="sortArray">
+
+            <template v-if="selectedOptions" #trigger>
               <b-button
+                label="Trier par..."
                 type="is-primary"
-                icon-right="menu-down"
-              >
-                Trier par... ({{ selectedOptions.length }})
-              </b-button>
+                icon-left="sort"
+                icon-right="menu-down" />
             </template>
+            <template v-else #trigger>
+              <b-button
+                label="Trier par..."
+                type="is-primary"
+                icon-left="sort"
+                icon-right="menu-down"/>
+            </template>
+            <b-dropdown-item value="aucun" aria-role="listitem">
+              <div class="media">
+                <b-icon class="media-left"></b-icon>
+                <div class="media-content">
+                  <h3>Aucun</h3>
+                </div>
+              </div>
+            </b-dropdown-item>
             <b-dropdown-item value="alpha" aria-role="listitem">
-              <span>Ordre alphabétique</span>
+              <div class="media">
+                <b-icon class="media-left" icon="sort-alphabetical-variant"></b-icon>
+                <div class="media-content">
+                  <h3>Ordre alphabétique</h3>
+                </div>
+              </div>
             </b-dropdown-item>
-
             <b-dropdown-item value="difficulte" aria-role="listitem">
-              <span>Difficulté</span>
+              <div class="media">
+                <b-icon class="media-left" icon="swap-vertical"></b-icon>
+                <div class="media-content">
+                  <h3>Difficulté</h3>
+                </div>
+              </div>
             </b-dropdown-item>
-
             <b-dropdown-item value="tpsrea" aria-role="listitem">
-              <span>Temps de réalisation</span>
+              <div class="media">
+                <b-icon class="media-left" icon="timer"></b-icon>
+                <div class="media-content">
+                  <h3>Temps de réalisation</h3>
+                </div>
+              </div>
             </b-dropdown-item>
-
             <client-only>
               <b-dropdown-item v-if="$auth.loggedIn" value="utisuivis" aria-role="listitem">
-                <span>Utilisateurs suivis</span>
+                <div class="media">
+                  <b-icon class="media-left" icon="account-multiple"></b-icon>
+                  <div class="media-content">
+                    <h3>Utilisateurs suivis</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item v-if="$auth.loggedIn" value="likedrecipes" aria-role="listitem">
+                <div class="media">
+                  <b-icon class="media-left" icon="heart"></b-icon>
+                  <div class="media-content">
+                    <h3>Recettes aimées</h3>
+                  </div>
+                </div>
               </b-dropdown-item>
             </client-only>
           </b-dropdown>
@@ -248,26 +283,31 @@
       </div>
     </div>
     <client-only>
-      <div v-if="$auth.loggedIn" class="is-flex">
-        <b-button type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
+      <div v-if="$auth.loggedIn" class="is-flex columns is-centered my-3">
+        <b-button class="column is-half is-2 p-2" type="is-primary" label="Créer une recette" @click="$router.push('/recette/creation')" />
       </div>
     </client-only>
     <div v-if="error">
       <p>Erreur lors de la récupération des recettes</p>
     </div>
-    <div v-else class="columns is-multiline is-justify-content-center">
-      <b-loading v-model="loading" :is-full-page="false" />
-      <card-recipe
-        v-for="recipe in filteredRecipes"
-        :id="recipe.id"
-        :key="recipe.id"
-        :difficulty="recipe.difficulte"
-        :recipename="recipe.titre"
-        :personnes="recipe.nb_pers"
-        :photo="recipe.url_img"
-        :time="recipe.temps"
-        style="cursor:pointer;"
-      />
+    <div v-else>
+      <div v-if="filteredRecipes.length > 0" class="columns is-multiline is-justify-content-center">
+        <b-loading v-model="loading" :is-full-page="false" />
+        <card-recipe
+          v-for="recipe in filteredRecipes"
+          :id="recipe.id"
+          :key="recipe.id"
+          :difficulty="recipe.difficulte"
+          :recipename="recipe.titre"
+          :personnes="recipe.nb_pers"
+          :photo="recipe.url_img"
+          :time="recipe.temps"
+          style="cursor:pointer;"
+        />
+      </div>
+      <div v-else class="columns is-justify-content-center mt-5">
+        <h1> Nous n’avons pas trouvé de résultats pour votre recherche </h1>
+      </div>
     </div>
   </section>
 </template>
@@ -285,9 +325,10 @@ export default {
       loading: true,
       filterHide: false,
       recipes: [],
+      isSorted: true,
       filteredRecipesArray: [],
       search: '',
-      selectedOptions: [],
+      selectedOptions: '',
       idUserSuivis: [],
       saisonFilter: ['toutes'],
       difficulteFilter: ['1', '2', '3'],
@@ -297,7 +338,8 @@ export default {
       produitFilter: [],
       paniers: [],
       name: '',
-      panierSelected: null
+      panierSelected: null,
+      recipesTmp: []
     }
   },
   computed: {
@@ -326,7 +368,12 @@ export default {
       })
       .catch((erreur) => {
         this.error = true
-        alert('Problème lors de la récupération des recettes: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
       .finally(() => {
         this.loading = false
@@ -338,7 +385,12 @@ export default {
         this.produits = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des produits: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     this.$axios
@@ -347,7 +399,12 @@ export default {
         this.paniers = response.data
       })
       .catch((erreur) => {
-        alert('Problème lors de la récupération des paniers: ' + erreur)
+        this.$buefy.toast.open({
+          message: 'Problème lors de la récupération des recettes : ' + erreur,
+          position: 'is-top',
+          type: 'is-danger',
+          duration: 5000
+        })
       })
 
     const today = Date.parse(new Date())
@@ -371,8 +428,8 @@ export default {
   },
   methods: {
     sortArray () {
-      for (let i = 0; i < this.selectedOptions.length; i++) {
-        if (this.selectedOptions[i] === 'alpha') {
+      switch (this.selectedOptions) {
+        case 'alpha':
           this.filteredRecipesArray.sort((a, b) => {
             if (a.titre.toLowerCase() < b.titre.toLowerCase()) {
               return -1
@@ -382,8 +439,8 @@ export default {
             }
             return 0
           })
-        }
-        if (this.selectedOptions[i] === 'difficulte') {
+          break
+        case 'difficulte':
           this.filteredRecipesArray.sort((a, b) => {
             if (a.difficulte < b.difficulte) {
               return -1
@@ -393,8 +450,8 @@ export default {
             }
             return 0
           })
-        }
-        if (this.selectedOptions[i] === 'tpsrea') {
+          break
+        case 'tpsrea':
           this.filteredRecipesArray.sort((a, b) => {
             if (a.temps < b.temps) {
               return -1
@@ -404,8 +461,8 @@ export default {
             }
             return 0
           })
-        }
-        if (this.selectedOptions[i] === 'utisuivis') {
+          break
+        case 'utisuivis':
           this.$axios.get(`/api/contributeurs/suivis/${this.$auth.user.id}`)
             .then((response) => {
               response.data.forEach((user) => {
@@ -415,7 +472,16 @@ export default {
                 return this.idUserSuivis.includes(recipe.id_createur)
               })
             })
-        }
+          break
+        case 'likedrecipes':
+          this.$axios.get(`/api/users/${this.$auth.user.id}/liked`)
+            .then((response) => {
+              this.filteredRecipesArray = response.data
+            })
+          break
+        case 'aucun':
+          this.filteredRecipesArray = this.recipesTmp
+          break
       }
     },
 
@@ -431,6 +497,7 @@ export default {
 
       const asyncFilter = async (arr, predicate) => {
         const results = await Promise.all(arr.map(predicate))
+        this.recipesTmp = arr
         return arr.filter((_v, index) => results[index])
       }
 
