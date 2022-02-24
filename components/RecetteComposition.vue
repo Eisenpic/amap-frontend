@@ -1,38 +1,34 @@
 <template>
-  <div v-if="!loading">
-    <div v-if="error">
-      <p>{{ messageError }}</p>
-    </div>
-    <div v-else class="recipe card">
-      <p class="has-text-centered has-text-weight-semibold is-size-2">
-        {{ recipe.titre }}
-      </p>
-      <div class="recipe-image  ">
-        <b-image :src="urlImg()" alt="Placeholder image"/>
+  <div>
+    <div v-if="!loading">
+      <div v-if="error">
+        <p>{{ messageError }}</p>
       </div>
-
-      <!-------------------- Affichage des détails -------------------->
-
       <div v-else class="recipe card">
-        <p class="has-text-centered has-text-weight-semibold is-size-2">
-          {{ recipe.titre }} <i class="is-size-4">({{ recipe.regime }})</i>
-        </p>
-        <div class="recipe-image  ">
-          <b-image :src="recipe.url_img" alt="Placeholder image" />
-        </div>
-        <div class="has-text-centered">
+
+        <!-------------------- Affichage des détails -------------------->
+
+        <div class="recipe card">
+          <p class="has-text-centered has-text-weight-semibold is-size-2">
+            {{ recipe.titre }} <i class="is-size-4">({{ recipe.regime }})</i>
+          </p>
+          <div class="recipe-image  ">
+            <b-image :src="urlImg(recipe.url_img)" alt="Placeholder image"/>
+          </div>
+          <div class="has-text-centered">
           <span class="icon-text">
             <span>{{ recipe.nb_pers }}</span>
             <span class="icon">
               <i class="fas fa-utensil-spoon"/>
             </span>
+          </span>
           </div>
         </div>
       </div>
     </div>
     <br>
     <p class="has-text-centered">
-      <i>{{ recipe.description }}</i>
+      <i>Test</i>
     </p>
     <div class="lorem text has-text-centered is-bordered mt-3 p-1">
       <button id="btn-ingredient" class="is-size-4 btnSelect btnSelected" @click="selectChange('ingredient')">
@@ -195,8 +191,6 @@
         <div v-if="error">
           <p>{{ messageError }}</p>
         </div>
-
-        <!-------------------- Affichage des détails -------------------->
       </div>
     </div>
   </div>
