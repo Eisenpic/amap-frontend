@@ -1,6 +1,11 @@
 <template>
   <div>
     <RecetteComposition :id="$route.params.id" />
+
+    <CommentaireRecipe
+      :id="$route.params.id"
+    />
+
     <hr>
     <div v-if="ready" id="map-wrap" class="mt-3" style="height: 50vh">
       <h5 class="is-5 title">Vous trouverez surement ce qu'il vous manque ici : </h5>
@@ -21,12 +26,14 @@
 </template>
 
 <script>
-
 import axios from 'axios'
+import CommentaireRecipe from '@/components/CommentaireRecipe'
 
 export default {
   name: 'RecetteVue',
-  components: {},
+  components: {
+    CommentaireRecipe
+  },
   methods: {
     isOk (data) {
       if (data.properties.categories.includes('commercial.food_and_drink.confectionery') || data.properties.categories.includes('commercial.food_and_drink.bakery')) {
