@@ -49,12 +49,13 @@
             :id="question.id"
             :key="question.id"
             class="mb-5"
-            :recette="question.id_recette"
+            :id_recette="question.id_recette"
             :question="question.question"
             :user="question.nom"
             :id_user="question.id_user"
             :expertise="question.id_expertise"
             :date="question.date"
+            :recette="question.recette"
             :resolu="question.resolu"
           />
         </template>
@@ -70,7 +71,6 @@ export default {
   components: {
     QuestionComponent
   },
-  middleware: 'auth',
   data () {
     return {
       error: false,

@@ -4,12 +4,17 @@
   </div>
   <div v-else class="container">
     <b-loading v-model="loading" :is-full-page="false" />
-    <div class="box level">
-      <h5 class="subtitle is-5 mt-5">
-        {{ question.question }}
-      </h5>
-      <button v-if="question.id_user === $store.state.auth.user.id && !question.resolu" class="ml-2 button" @click="resolved()">Résolue</button>
-      <p v-if="question.resolu" class="mr-2 p-3" style="background-color:hsl(171, 100%, 41%); color:white; border-radius:10px; font-family:cursive; font-size:1.1em;" disabled>Résolue</p>
+    <div class="box">
+      <h4 class="subtitle is-4 mt-5 pl-3 pt-3" style="font-family:cursive;"><b>Recette {{question.recette}}</b></h4>
+      <div class="level pl-3 pb-3">
+        <h5 class="subtitle is-5">
+          {{ question.question }}
+        </h5>
+        <div v-if="$store.state.auth.user">
+          <button v-if="question.id_user === $store.state.auth.user.id && !question.resolu" class="ml-2 button" @click="resolved()">Résolue</button>
+        </div>
+        <p v-if="question.resolu" class="mr-2 p-3" style="background-color:hsl(171, 100%, 41%); color:white; border-radius:10px; font-family:cursive; font-size:1.1em;" disabled>Résolue</p>
+      </div>
     </div>
     <template v-for="rep in responses">
       <MessageComponent
@@ -23,7 +28,7 @@
       />
     </template>
     <transition name="fade">
-      <div v-if="!haveMessage && $store.state.auth.user && expert">
+      <div v-if="!haveMessage && $store.state.auth.user && expert && !question.resolu">
         <textarea v-model="message" class="textarea" placeholder="Ecrivez votre messages ici" rows="5" />
         <button class="button is-primary mt-2" @click="sendMessage">
           Envoyer
@@ -54,6 +59,11 @@ export default {
     this.$axios.get(`/api/question/${this.$route.params.id}`)
       .then((response) => {
         this.question = response.data
+        if (this.$store.state.auth.user) {
+          if (this.$store.state.auth.user.id === this.question.id_user) {
+            this.haveMessage = true
+          }
+        }
       })
       .catch((error) => {
         this.error = true
@@ -77,7 +87,6 @@ export default {
         this.error = true
         this.errorMessage = 'Erreur lors de la récupération des réponses.\n Erreur: ' + error
       })
-
     if (this.$store.state.auth.user) {
       this.$axios.get(`/api/users/${this.$store.state.auth.user.id}/expertises`)
         .then((response) => {

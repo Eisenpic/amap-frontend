@@ -1,6 +1,7 @@
 <template>
   <div class="border card" style="cursor:pointer;" @click="$router.push('/QandA/' + id)">
     <div class="p-3">
+      <p style="font-size:1.1em;"><b>{{recette}}</b></p>
       <p>{{ question }}</p>
     </div>
     <div class="level p-1">
@@ -21,7 +22,7 @@
 export default {
   name: 'QuestionComponent',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['id', 'recette', 'question', 'user', 'date', 'expertise', 'resolu'],
+  props: ['id', 'id_recette', 'recette', 'question', 'user', 'date', 'expertise', 'resolu'],
   computed: {
     dateFormat () {
       return new Date(this.date).toLocaleDateString('fr')
