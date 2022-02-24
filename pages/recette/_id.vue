@@ -1,7 +1,8 @@
 <template>
   <div>
     <RecetteComposition :id="$route.params.id" />
-    <div v-if="ready" id="map-wrap" class="mt-3 box" style="height: 50vh">
+    <hr>
+    <div v-if="ready" id="map-wrap" class="mt-3" style="height: 50vh">
       <h5 class="is-5 title">Vous trouverez surement ce qu'il vous manque ici : </h5>
       <client-only>
         <l-map :zoom=14 :center="[this.latclient,this.longclient]">
@@ -48,7 +49,7 @@ export default {
       this.latclient = response.data.lat
       this.longclient = response.data.lon
     }).finally(() => {
-      axios.get('https://api.geoapify.com/v2/places?categories=commercial.food_and_drink,commercial.marketplace&filter=circle:6.1563105,48.6740234,5000&bias=proximity:' + this.longclient + ',' + this.latclient + '&lang=fr&limit=50&apiKey=a0991a154c034c2eb147ee9e4d329518').then((response) => {
+      axios.get('https://api.geoapify.com/v2/places?categories=commercial.food_and_drink,commercial.marketplace&filter=circle:' + this.longclient + ',' + this.latclient + ',5000&bias=proximity:' + this.longclient + ',' + this.latclient + '&lang=fr&limit=50&apiKey=3a3750683e974300a3dc8c1da389fbc2').then((response) => {
         this.magasins = response.data.features
         this.ready = true
       })

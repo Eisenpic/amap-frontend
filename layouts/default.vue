@@ -2,7 +2,7 @@
   <div>
     <navbar-component />
     <section class="main-content columns is-justify-content-center">
-      <div class="column is-12">
+      <div class="column is-10">
         <Nuxt />
       </div>
     </section>
