@@ -10,14 +10,15 @@
       <div class="recipe-image  ">
         <b-image :src="urlImg()" alt="Placeholder image"/>
       </div>
-      <div class="recipe-info is-flex is-flex-wrap-wrap is-justify-content-space-between">
-        <div class="timerecipe">
-          <p>{{ timeConv(recipe.temps) }}</p>
-        </div>
-        <div class="recipe-content">
-          <p class="has-text-centered">
-            {{ level }}
-          </p>
+
+      <!-------------------- Affichage des détails -------------------->
+
+      <div v-else class="recipe card">
+        <p class="has-text-centered has-text-weight-semibold is-size-2">
+          {{ recipe.titre }} <i class="is-size-4">({{ recipe.regime }})</i>
+        </p>
+        <div class="recipe-image  ">
+          <b-image :src="recipe.url_img" alt="Placeholder image" />
         </div>
         <div class="has-text-centered">
           <span class="icon-text">
@@ -25,7 +26,7 @@
             <span class="icon">
               <i class="fas fa-utensil-spoon"/>
             </span>
-          </span>
+          </div>
         </div>
       </div>
     </div>
@@ -224,7 +225,10 @@ export default {
       t: null,
       indexEtape: 0,
       etapeActive: false,
-      modalActive: false
+      modalActive: false,
+      expertises: null,
+      expertiseModal: null,
+      messageModal: null
     }
   },
   computed: {
@@ -257,9 +261,9 @@ export default {
         this.recipe = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération de la recette'
+        this.messageError = 'Erreur lors de la récupération de la recette.\n Erreur: ' + error
       })
       .finally(() => {
         this.loading = false
@@ -270,9 +274,9 @@ export default {
         this.produits = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette'
+        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/ustensiles/' + this.id)
@@ -280,9 +284,9 @@ export default {
         this.ustensiles = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette'
+        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/etapes/' + this.id)
@@ -290,9 +294,18 @@ export default {
         this.etapes = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des étapes de la recette'
+        this.messageError = 'Erreur lors de la récupération des étapes de la recette.\n Erreur: ' + error
+      })
+    axios
+      .get('/api/expertises')
+      .then((response) => {
+        this.expertises = response.data
+      })
+      .catch((error) => {
+        this.error = true
+        this.messageError = 'Erreur lors de la récupération des expertises.\n Erreur: ' + error
       })
   },
   methods: {
