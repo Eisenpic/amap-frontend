@@ -3,7 +3,7 @@
     <div v-if="display" class="box ml-5">
       <div>
         <div class="is-flex">
-          <img v-if="img_user" class='mr-2' :src="img_user" width="20" height="20">
+          <img v-if="img_user" class="mr-2" :src="img_user" width="20" height="20">
           <h1><strong>{{ user }}</strong> : </h1>
           <button v-if="id_user === $store.state.auth.user.id" class="ml-2 button is-small" @click="edit = !edit">
             <i class="fas fa-edit" />
@@ -16,7 +16,9 @@
           <span v-html="messageNoEdit" />
         </div>
         <div>
-          <p class="has-text-right"><i>posté le {{dateFormat}}</i></p>
+          <p class="has-text-right">
+            <i>posté le {{ dateFormat }}</i>
+          </p>
         </div>
       </div>
       <div v-if="edit === true">
@@ -40,6 +42,11 @@ export default {
       edit: false,
       display: true,
       messageEdit: ''
+    }
+  },
+  computed: {
+    dateFormat () {
+      return new Date(this.date).toLocaleDateString('fr', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
     }
   },
   methods: {
@@ -90,11 +97,6 @@ export default {
           type: 'is-danger'
         })
       }
-    }
-  },
-  computed: {
-    dateFormat () {
-      return new Date(this.date).toLocaleDateString('fr', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
     }
   }
 }
