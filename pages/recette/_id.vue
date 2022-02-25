@@ -22,17 +22,45 @@
         </l-map>
       </client-only>
     </div>
+    <br>
+    <br>
+    <hr>
+    <br>
+
+    <!-------------------- Affichage des recettes similaires -------------------->
+
+    <div v-if="readyRecSimi" class="mb-5">
+      <h5 class="is-5 title">Recettes similaires</h5>
+      <VueSlickCarousel v-bind="carouselSettings">
+        <CardRecipe
+          v-for="recette in recettesSimilaires"
+          :id="recette.recette.id"
+          :key="recette.recette.id"
+          :difficulty="recette.recette.difficulte"
+          :recipename="recette.recette.titre"
+          :personnes="recette.recette.nb_pers"
+          :photo="recette.recette.url_img"
+          :time="recette.recette.temps"
+          :ingrSimi="recette.prodSimi"
+          style="cursor:pointer;"
+        />
+      </VueSlickCarousel>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import VueSlickCarousel from 'vue-slick-carousel'
 import CommentaireRecipe from '@/components/CommentaireRecipe'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 export default {
   name: 'RecetteVue',
   components: {
-    CommentaireRecipe
+    CommentaireRecipe,
+    VueSlickCarousel
   },
   methods: {
     isOk (data) {
@@ -48,7 +76,35 @@ export default {
       latclient: 0,
       longclient: 0,
       magasins: {},
-      ready: false
+      ready: false,
+      readyRecSimi: false,
+      recettesSimilaires: [],
+      carouselSettings: {
+        focusOnSelect: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        touchThreshold: 5,
+        autoplay: true,
+        autoplaySpeed: 3500,
+        pauseOnHover: true,
+        arrows: false,
+        responsive: [
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1
+            }
+          },
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 2
+            }
+          }
+        ]
+      }
     }
   },
   mounted () {
@@ -61,6 +117,15 @@ export default {
         this.ready = true
       })
     })
+
+    this.$axios.get(`/api/recette/${this.$route.params.id}/similaires`)
+      .then((response) => {
+        this.recettesSimilaires = response.data
+        this.readyRecSimi = true
+      })
+      .catch(() => {
+        console.log('Erreur lors de la récupération des recettes similaires')
+      })
   }
 }
 </script>
