@@ -24,12 +24,12 @@
     </div>
     <br>
     <br>
-    <hr>
-    <br>
 
     <!-------------------- Affichage des recettes similaires -------------------->
 
-    <div v-if="readyRecSimi" class="mb-5">
+    <div v-if="readyRecSimi && recettesSimilaires.length > 0" class="mb-5">
+      <hr>
+      <br>
       <h5 class="is-5 title">Recettes similaires</h5>
       <VueSlickCarousel v-bind="carouselSettings">
         <CardRecipe

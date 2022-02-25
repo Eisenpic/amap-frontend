@@ -34,17 +34,17 @@
             </span>
           </div>
         </div>
-        <div v-if="ingrSimi" class="has-text-centered mt-1">
-          Produits similaires:
-          <span
-            v-for="ingr in ingrSimi"
-            :key="ingr.id"
-            class="is-italic"
-          >
+      </div>
+    </div>
+    <div v-if="ingrSimi" class="has-text-centered mt-1">
+      Produits similaires:
+      <span
+        v-for="ingr in ingrSimi"
+        :key="ingr.id"
+        class="is-italic"
+      >
         {{ ingr.nom }}
       </span>
-        </div>
-      </div>
     </div>
   </div>
 </template>
