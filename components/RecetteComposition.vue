@@ -199,7 +199,6 @@
 import axios from 'axios'
 import tic from '../assets/sound/tic.mp3'
 import finish from '../assets/sound/finish.mp3'
-
 export default {
   name: 'RecetteComp',
   // eslint-disable-next-line vue/require-prop-types
@@ -238,15 +237,12 @@ export default {
           return 'Not filled in'
       }
     },
-
     isAuthentificated () {
       return this.$auth.loggedIn
     },
-
     timerFormat () {
       return this.timeConv(this.timer)
     }
-
   },
   created () {
     axios
@@ -308,29 +304,23 @@ export default {
       let heures = ''
       let minutes = ''
       let secondes = ''
-
       if ((time / 3600) >= 1) {
         heures = Math.trunc(time / 3600) + 'h '
         time -= 3600 * Math.trunc(time / 3600)
       }
-
       if ((time / 60) >= 1) {
         minutes = Math.trunc(time / 60) + 'min '
         time -= 60 * Math.trunc(time / 60)
       }
-
       if (time > 0) {
         secondes = time + 'sec'
       }
-
       return heures + minutes + secondes
     },
-
     urlImg () {
       const url = `http://localhost:8000/uploads/img/${this.recipe.url_img}`
       return url.toString()
     },
-
     selectChange (type) {
       document.getElementById('btn-ingredient').classList.remove('btnSelected')
       document.getElementById('btn-ustensile').classList.remove('btnSelected')
@@ -342,12 +332,10 @@ export default {
         document.getElementById('btn-ustensile').classList.add('btnSelected')
       }
     },
-
     displayStep () {
       this.timer = this.etapes[this.indexEtape].temps
       this.etapeActive = !this.etapeActive
     },
-
     chronometer () {
       this.timer--
       let audio = new Audio(tic)
@@ -361,10 +349,8 @@ export default {
         return null
       }
     },
-
     startAndStopTimer () {
       this.play = !this.play
-
       if (this.play) {
         document.getElementById('chrono').style = 'color: red; cursor:pointer;'
         this.t = setInterval(this.chronometer, 1000)
@@ -373,13 +359,11 @@ export default {
         clearInterval(this.t)
       }
     },
-
     restart () {
       this.timer = this.etapes[this.indexEtape].temps
       document.getElementById('chrono').style = 'display: block'
       document.getElementById('chronoRestart').style = 'display: none;'
     },
-
     openModal () {
       if (this.isAuthentificated) {
         this.$buefy.modal.open({
@@ -394,17 +378,13 @@ export default {
       }
     }
   }
-
 }
-
 </script>
 
 <style scoped>
-
 .cross {
   float: right;
 }
-
 .btnSelect {
   width: 49.5%;
   border-radius: 8px;
@@ -412,62 +392,48 @@ export default {
   border: none;
   cursor: pointer;
 }
-
 .btnSelected {
   background-color: #7957d5;
   color: antiquewhite;
 }
-
 .recipe {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
 }
-
 .recipe-image {
   border-radius: 8px;
   overflow: hidden;
   margin: 10px;
 }
-
 .lorem {
   border: solid rgb(148, 148, 148) 1px;
   border-radius: 8px;
 }
-
 .likedislike {
   margin: 0 auto;
 }
-
 .avis {
   margin: 0 auto;
 }
-
 .imgEtape {
   padding: 2%;
   margin-right: 2%;
   max-width: 50%;
   max-height: 90%;
 }
-
 li {
   list-style-type: '- ';
 }
-
 @media (max-width: 768px) {
-
   h1 {
     text-align: center;
   }
-
   .contenu {
     text-align: center;
   }
-
   .imgEtape {
     margin: 0 auto;
   }
-
 }
-
 </style>
