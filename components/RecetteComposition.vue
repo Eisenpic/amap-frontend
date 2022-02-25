@@ -28,7 +28,7 @@
     </div>
     <br>
     <p class="has-text-centered">
-      <i>Test</i>
+      <i>{{ recipe.description }}</i>
     </p>
     <div class="lorem text has-text-centered is-bordered mt-3 p-1">
       <button id="btn-ingredient" class="is-size-4 btnSelect btnSelected" @click="selectChange('ingredient')">
