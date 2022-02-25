@@ -172,8 +172,8 @@
               <span>Végétarien</span>
             </b-dropdown-item>
 
-            <b-dropdown-item value="vegan" aria-role="listitem">
-              <span>Vegan</span>
+            <b-dropdown-item value="végan" aria-role="listitem">
+              <span>Végan</span>
             </b-dropdown-item>
 
             <b-dropdown-item value="flexitarien" aria-role="listitem">
@@ -332,7 +332,7 @@ export default {
       idUserSuivis: [],
       saisonFilter: ['toutes'],
       difficulteFilter: ['1', '2', '3'],
-      regimeFilter: ['sans gluten', 'végétarien', 'vegan', 'flexitarien', 'hypocalorique', 'carnivore', 'omnivore'],
+      regimeFilter: ['sans gluten', 'végétarien', 'végan', 'flexitarien', 'hypocalorique', 'carnivore', 'omnivore'],
       typeFilter: ['entrée', 'plat', 'dessert', 'collation', 'boisson'],
       produits: [],
       produitFilter: [],
