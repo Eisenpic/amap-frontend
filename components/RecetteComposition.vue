@@ -10,28 +10,31 @@
       <div class="recipe-image  ">
         <b-image :src="urlImg()" alt="Placeholder image" />
       </div>
-      <div class="recipe-info is-flex is-flex-wrap-wrap is-justify-content-space-between">
-        <div class="timerecipe">
-          <p>{{ timeConv(recipe.temps) }}</p>
-        </div>
-        <div class="recipe-content">
-          <p class="has-text-centered">
-            {{ level }}
+      <div v-else class="recipe card">
+
+        <!-------------------- Affichage des détails -------------------->
+
+        <div class="recipe card">
+          <p class="has-text-centered has-text-weight-semibold is-size-2">
+            {{ recipe.titre }} <i class="is-size-4">({{ recipe.regime }})</i>
           </p>
-        </div>
-        <div class="has-text-centered">
+          <div class="recipe-image  ">
+            <b-image :src="urlImg(recipe.url_img)" alt="Placeholder image"/>
+          </div>
+          <div class="has-text-centered">
           <span class="icon-text">
             <span>{{ recipe.nb_pers }}</span>
             <span class="icon">
               <i class="fas fa-utensil-spoon" />
             </span>
           </span>
+          </div>
         </div>
       </div>
     </div>
     <br>
     <p class="has-text-centered">
-      <i>{{ recipe.description }}</i>
+      <i>Test</i>
     </p>
     <div class="lorem text has-text-centered is-bordered mt-3 p-1">
       <button id="btn-ingredient" class="is-size-4 btnSelect btnSelected" @click="selectChange('ingredient')">
@@ -187,8 +190,6 @@
         <div v-if="error">
           <p>{{ messageError }}</p>
         </div>
-
-        <!-------------------- Affichage des détails -------------------->
       </div>
     </div>
   </div>
@@ -197,7 +198,6 @@
 import axios from 'axios'
 import tic from '../assets/sound/tic.mp3'
 import finish from '../assets/sound/finish.mp3'
-
 export default {
   name: 'RecetteComp',
   // eslint-disable-next-line vue/require-prop-types
@@ -219,7 +219,10 @@ export default {
       t: null,
       indexEtape: 0,
       etapeActive: false,
-      modalActive: false
+      modalActive: false,
+      expertises: null,
+      expertiseModal: null,
+      messageModal: null
     }
   },
   computed: {
@@ -235,15 +238,12 @@ export default {
           return 'Not filled in'
       }
     },
-
     isAuthentificated () {
       return this.$auth.loggedIn
     },
-
     timerFormat () {
       return this.timeConv(this.timer)
     }
-
   },
   mounted () {
     if (this.$auth.loggedIn) {
@@ -274,9 +274,9 @@ export default {
         this.recipe = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération de la recette'
+        this.messageError = 'Erreur lors de la récupération de la recette.\n Erreur: ' + error
       })
       .finally(() => {
         this.loading = false
@@ -287,9 +287,9 @@ export default {
         this.produits = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette'
+        this.messageError = 'Erreur lors de la récupération des ingrédients de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/ustensiles/' + this.id)
@@ -297,9 +297,9 @@ export default {
         this.ustensiles = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette'
+        this.messageError = 'Erreur lors de la récupération des ustensiles de la recette.\n Erreur: ' + error
       })
     axios
       .get('/api/recette/etapes/' + this.id)
@@ -307,9 +307,18 @@ export default {
         this.etapes = response.data
         this.error = false
       })
-      .catch(() => {
+      .catch((error) => {
         this.error = true
-        this.messageError = 'Erreur lors de la récupération des étapes de la recette'
+        this.messageError = 'Erreur lors de la récupération des étapes de la recette.\n Erreur: ' + error
+      })
+    axios
+      .get('/api/expertises')
+      .then((response) => {
+        this.expertises = response.data
+      })
+      .catch((error) => {
+        this.error = true
+        this.messageError = 'Erreur lors de la récupération des expertises.\n Erreur: ' + error
       })
   },
   methods: {
@@ -346,29 +355,23 @@ export default {
       let heures = ''
       let minutes = ''
       let secondes = ''
-
       if ((time / 3600) >= 1) {
         heures = Math.trunc(time / 3600) + 'h '
         time -= 3600 * Math.trunc(time / 3600)
       }
-
       if ((time / 60) >= 1) {
         minutes = Math.trunc(time / 60) + 'min '
         time -= 60 * Math.trunc(time / 60)
       }
-
       if (time > 0) {
         secondes = time + 'sec'
       }
-
       return heures + minutes + secondes
     },
-
     urlImg () {
       const url = `http://localhost:8000/uploads/img/${this.recipe.url_img}`
       return url.toString()
     },
-
     selectChange (type) {
       document.getElementById('btn-ingredient').classList.remove('btnSelected')
       document.getElementById('btn-ustensile').classList.remove('btnSelected')
@@ -380,12 +383,10 @@ export default {
         document.getElementById('btn-ustensile').classList.add('btnSelected')
       }
     },
-
     displayStep () {
       this.timer = this.etapes[this.indexEtape].temps
       this.etapeActive = !this.etapeActive
     },
-
     chronometer () {
       this.timer--
       let audio = new Audio(tic)
@@ -399,10 +400,8 @@ export default {
         return null
       }
     },
-
     startAndStopTimer () {
       this.play = !this.play
-
       if (this.play) {
         document.getElementById('chrono').style = 'color: red; cursor:pointer;'
         this.t = setInterval(this.chronometer, 1000)
@@ -411,13 +410,11 @@ export default {
         clearInterval(this.t)
       }
     },
-
     restart () {
       this.timer = this.etapes[this.indexEtape].temps
       document.getElementById('chrono').style = 'display: block'
       document.getElementById('chronoRestart').style = 'display: none;'
     },
-
     openModal () {
       if (this.isAuthentificated) {
         this.$buefy.modal.open({
@@ -432,17 +429,13 @@ export default {
       }
     }
   }
-
 }
-
 </script>
 
 <style scoped>
-
 .cross {
   float: right;
 }
-
 .btnSelect {
   width: 49.5%;
   border-radius: 8px;
@@ -450,44 +443,36 @@ export default {
   border: none;
   cursor: pointer;
 }
-
 .btnSelected {
   background-color: #7957d5;
   color: antiquewhite;
 }
-
 .recipe {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
 }
-
 .recipe-image {
   border-radius: 8px;
   overflow: hidden;
   margin: 10px;
 }
-
 .lorem {
   border: solid rgb(148, 148, 148) 1px;
   border-radius: 8px;
 }
-
 .likedislike {
   margin: 0 auto;
 }
-
 .avis {
   margin: 0 auto;
 }
-
 .imgEtape {
   padding: 2%;
   margin-right: 2%;
   max-width: 50%;
   max-height: 90%;
 }
-
 li {
   list-style-type: '- ';
 }
@@ -520,18 +505,14 @@ i {
 }
 
 @media (max-width: 768px) {
-
   h1 {
     text-align: center;
   }
-
   .contenu {
     text-align: center;
   }
-
   .imgEtape {
     margin: 0 auto;
   }
 }
-
 </style>
