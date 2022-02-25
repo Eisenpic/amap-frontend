@@ -8,7 +8,7 @@
         {{ recipe.titre }}
       </p>
       <div class="recipe-image  ">
-        <b-image :src="urlImg()" alt="Placeholder image"/>
+        <b-image :src="urlImg()" alt="Placeholder image" />
       </div>
       <div class="recipe-info is-flex is-flex-wrap-wrap is-justify-content-space-between">
         <div class="timerecipe">
@@ -23,7 +23,7 @@
           <span class="icon-text">
             <span>{{ recipe.nb_pers }}</span>
             <span class="icon">
-              <i class="fas fa-utensil-spoon"/>
+              <i class="fas fa-utensil-spoon" />
             </span>
           </span>
         </div>
@@ -63,22 +63,14 @@
       <p>{{ etape.contenu }}</p>
     </div>
     <br>
-    <div class="recipe-logo has-text-centered is-flex flex-wrap-wrap mt-2">
-      <div class="likedislike">
-        <b-button type="is-primary" size="is-large" outlined rounded>
-          <b-icon
-            pack="far"
-            icon="thumbs-up"
-            size="is-medium"
-          />
-        </b-button>
-        <b-button type="is-primary" size="is-large" outlined rounded>
-          <b-icon
-            pack="far"
-            icon="thumbs-down"
-            size="is-medium"
-          />
-        </b-button>
+    <div v-if="$auth.loggedIn" class="recipe-logo is-justify-content-space-evenly is-flex flex-wrap-wrap mt-2">
+      <div>
+        <i v-if="isLiked" id="liked" class="fas fa-heart" @click="dislikeRecipe" />
+        <i v-else id="notLiked" class="fas fa-heart" @click="likeRecipe" />
+      </div>
+      <div>
+        <i v-if="isFav" id="fav" class="fas fa-bookmark" @click="unfavRecipe" />
+        <i v-else id="unfav" class="fas fa-bookmark" @click="favRecipe" />
       </div>
     </div>
 
@@ -87,16 +79,17 @@
 
       <b-modal v-if="etapes" id="fenetreEtape" v-model="etapeActive">
         <div id="etapeCard" class="card p-4">
-          <i class="fas fa-times cross fa-lg"
-             style="cursor: pointer;"
-             @click="etapeActive = !etapeActive; play = true; startAndStopTimer()"
+          <i
+            class="fas fa-times cross fa-lg"
+            style="cursor: pointer;"
+            @click="etapeActive = !etapeActive; play = true; startAndStopTimer()"
           />
           <h1 class="is-size-4 ml-4 mt-4">
             <b>ÉTAPE {{ etapes[indexEtape].numero }}</b> {{ etapes[indexEtape].titre }}
           </h1>
           <p v-if="etapes[indexEtape].temps" class="has-text-centered p-3">
-            <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()"/>
-            <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()"/>
+            <i id="chrono" class="fas fa-stopwatch fa-2x" style="cursor:pointer;" @click="startAndStopTimer()" />
+            <i id="chronoRestart" class="fas fa-clock-rotate-left fa-2x" style="display:none" @click="restart()" />
             {{ timerFormat }}
           </p>
           <div class="columns">
@@ -211,6 +204,8 @@ export default {
   props: ['id'],
   data () {
     return {
+      isLiked: '',
+      isFav: '',
       error: false,
       messageError: '',
       loading: true,
@@ -249,6 +244,28 @@ export default {
       return this.timeConv(this.timer)
     }
 
+  },
+  mounted () {
+    if (this.$auth.loggedIn) {
+      this.$axios.get(`/api/users/${this.$auth.$state.user.id}/fav`)
+        .then((response) => {
+          response.data.forEach((el) => {
+            if (el.id.toString() === this.id) {
+              this.isFav = true
+            }
+          })
+        })
+      this.$axios.get(`/api/users/${this.$auth.$state.user.id}/liked`)
+        .then((response) => {
+          console.log(response.data)
+          response.data.forEach((el) => {
+            console.log(typeof this.id + ' type de el : ' + typeof el.id)
+            if (el.id.toString() === this.id) {
+              this.isLiked = true
+            }
+          })
+        })
+    }
   },
   created () {
     axios
@@ -296,6 +313,34 @@ export default {
       })
   },
   methods: {
+    likeRecipe () {
+      this.$axios.post(`/api/users/${this.$auth.$state.user.id}/like/${this.id}`)
+        .then(() => {
+          this.isLiked = true
+          this.$buefy.toast.open('Vous avez aimé cette recette')
+        })
+    },
+    dislikeRecipe () {
+      this.$axios.delete(`/api/users/${this.$auth.$state.user.id}/dislike/${this.id}`)
+        .then(() => {
+          this.isLiked = false
+          this.$buefy.toast.open("Vous n'aimez plus recette")
+        })
+    },
+    favRecipe () {
+      this.$axios.post(`/api/users/${this.$auth.$state.user.id}/fav/${this.id}`)
+        .then(() => {
+          this.isFav = true
+          this.$buefy.toast.open('Vous avez mis cette recette en favoris')
+        })
+    },
+    unfavRecipe () {
+      this.$axios.delete(`/api/users/${this.$auth.$state.user.id}/unfav/${this.id}`)
+        .then(() => {
+          this.isFav = false
+          this.$buefy.toast.open('Vous avez enlevé cette recette de vos favoris')
+        })
+    },
     timeConv (time) {
       // let time = this.recipe.temps
       let heures = ''
@@ -447,6 +492,33 @@ li {
   list-style-type: '- ';
 }
 
+i {
+  transform: scale(2.5);
+}
+#notLiked:hover {
+  color: red;
+}
+
+#liked {
+  color: red;
+}
+
+#liked:hover {
+  color: rgba(124, 4, 4, 0.93);
+}
+
+#unfav:hover {
+  color: green;
+}
+
+#fav {
+  color: green;
+}
+
+#fav:hover {
+  color: darkgreen;
+}
+
 @media (max-width: 768px) {
 
   h1 {
@@ -460,7 +532,6 @@ li {
   .imgEtape {
     margin: 0 auto;
   }
-
 }
 
 </style>

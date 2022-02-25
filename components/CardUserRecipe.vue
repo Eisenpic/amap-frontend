@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: 'CardRecipe',
+  name: 'CardUserRecipe',
   // eslint-disable-next-line vue/require-prop-types
   props: ['recipename', 'photo', 'id'],
   data () {

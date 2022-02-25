@@ -9,7 +9,7 @@
           <b-navbar-item tag="nuxt-link" to="/compte/userRecipes" class="is-size-5">
             Mes Recettes
           </b-navbar-item>
-          <b-navbar-item tag="nuxt-link" to="/compte/params" class="is-size-5">
+          <b-navbar-item tag="nuxt-link" to="/compte/favRecipes" class="is-size-5">
             Favoris
           </b-navbar-item>
         </template>
