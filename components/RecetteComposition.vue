@@ -17,15 +17,19 @@
           </div>
           <div class="has-text-centered">
           <span class="icon-text">
-            <span>{{ recipe.nb_pers }}</span>
             <span class="icon">
               <i class="fas fa-utensil-spoon"/>
             </span>
           </span>
+          <div class="pb-3 mt-2" style="max-width:35%; margin: 0 auto;">
+            <b-field label="">
+              <b-numberinput v-model="nbPers" placeholder="" :min="1"></b-numberinput>
+            </b-field>
           </div>
         </div>
       </div>
     </div>
+  </div>
     <br>
     <p class="has-text-centered">
       <i>Test</i>
@@ -41,7 +45,9 @@
     <div class="lorem is-bordered mt-1">
       <ul v-if="type === 'ingredient'" class="p-5">
         <li v-for="produit in produits" :key="produit.id_produit">
-          {{ produit.nombre }} {{ produit.unite }} {{ produit.nom }}
+          <p v-if="!produit.unite && !produit.nombre">{{ produit.nom }}</p>
+          <p v-if="isFloat(produit.nombre * nbPers)">{{ getFraction(produit.nombre * nbPers) }} {{ getUnit(produit.nombre * nbPers, produit.unite) }} {{ produit.nom }}</p>
+          <p v-else>{{ convertNumber(produit.nombre * nbPers) }} {{ getUnit(produit.nombre * nbPers, produit.unite) }} {{ produit.nom }}</p>
         </li>
       </ul>
       <ul v-else class="p-5">
@@ -210,6 +216,7 @@ export default {
       loading: true,
       recipe: null,
       produits: null,
+      produitPers: [],
       ustensiles: null,
       etapes: null,
       type: 'ingredient',
@@ -221,7 +228,8 @@ export default {
       modalActive: false,
       expertises: null,
       expertiseModal: null,
-      messageModal: null
+      messageModal: null,
+      nbPers: 1
     }
   },
   computed: {
@@ -250,6 +258,7 @@ export default {
       .then((response) => {
         this.recipe = response.data
         this.error = false
+        this.nbPers = this.recipe.nb_pers
       })
       .catch((error) => {
         this.error = true
@@ -262,6 +271,9 @@ export default {
       .get('/api/recette/produits/' + this.id)
       .then((response) => {
         this.produits = response.data
+        this.produits.forEach((produit) => {
+          produit.nombre = produit.nombre / this.recipe.nb_pers
+        })
         this.error = false
       })
       .catch((error) => {
@@ -375,6 +387,48 @@ export default {
         })
       } else {
         this.$router.push('/connexion')
+      }
+    },
+    isFloat (n) {
+      return Number(n) === n && n % 1 !== 0 && n * this.nbPers !== 1
+    },
+    getFraction (decimal) {
+      let x = decimal
+      if (decimal >= 1000) {
+        x = decimal / 1000
+      }
+      const a = x - x.toFixed()
+      const tens = Math.pow(10, a.toString().length - 2)
+      const numerator = tens * x
+      const denominator = tens
+      const numden = this.reduce(numerator, denominator)
+      if (numden[0] < 10 && numden[1] < 10) {
+        return numden[0] + '/' + numden[1]
+      } else {
+        return x.toFixed(2)
+      }
+    },
+    reduce (numerator, denominator) {
+      let gcd = function gcd (a, b) {
+        return b ? gcd(b, a % b) : a
+      }
+      gcd = gcd(numerator, denominator)
+      return [numerator / gcd, denominator / gcd]
+    },
+    getUnit (nb, unite) {
+      if (unite === 'g' && nb >= 1000) {
+        return 'kg'
+      } else if (unite === 'ml' && nb >= 1000) {
+        return 'L'
+      } else {
+        return unite
+      }
+    },
+    convertNumber (number) {
+      if (number >= 1000) {
+        return number / 1000
+      } else {
+        return number
       }
     }
   }
